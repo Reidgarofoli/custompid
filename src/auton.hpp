@@ -4,8 +4,26 @@
 
 void auton0(){
     if (team == 'r'){    
-        moveToPoint(0, 10, 100000, {}, false);
-    } else {       
+        setPose(0,0,0);
+        currentPosition=outPos;
+        pros::delay(400);
+        moveToPoint(0,-10,100000,{.forwards=false}, false);
+        currentPosition=lowPos;    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        } else {       
 
     }
 }

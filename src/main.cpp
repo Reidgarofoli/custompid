@@ -119,11 +119,11 @@ void printing(){
         }
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 400, 14, "%d", auton);
 
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "x:%f", getX());
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", getY());
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", getAngle(false));
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "fDist:%f", fDist.get()/25.4);
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "rDist:%f", rDist.get()/25.4);
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "x:%f", getX());
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", getY());
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", getAngle(false));
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "fDist:%f", fDist.get()/25.4);
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "rDist:%f", rDist.get()/25.4);
 
         ///pros::lcd::print(1, "x:%f, y:%f, theta:%f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
         // pros::lcd::print(2, "color:%f  proximity:%d", colorSensor.get_hue(), colorSensor.get_proximity());

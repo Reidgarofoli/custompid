@@ -537,8 +537,14 @@ void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool a
 
         // calculate error
         const float adjustedRobotTheta = params.forwards ? getAngle(false) : getAngle(false) + 180;
-        const float angularError = adjustedRobotTheta - currentPos.angle(target);
+        const float angularError = angleError(adjustedRobotTheta, currentPos.angle(target), false);
         float lateralError = currentPos.distance(target)* (cos(degToRad(adjustedRobotTheta - currentPos.angle(target))));
+
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "a_err:%f", angularError);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "adjust:%f", adjustedRobotTheta);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "latErr:%f", lateralError);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "angle:%f", currentPos.angle(target));
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "rDist:%f", rDist.get()/25.4);
 
         // update exit conditions
         lateralSmallExit.update(lateralError);
