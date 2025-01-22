@@ -376,6 +376,99 @@ void turnToHeading(float theta, int timeout, TurnToHeadingParams params, bool as
     LDrive.move(0);
     RDrive.move(0);
 }
+void swingToHeading(float theta, DriveSide lockedSide, int timeout, SwingToHeadingParams params,
+                                     bool async) {
+    params.minSpeed = fabs(params.minSpeed);
+    // if the function is async, run it in a new task
+    if (async) {
+        pros::Task task([&]() { swingToHeading(theta, lockedSide, timeout, params, false); });
+        pros::delay(10); // delay to give the task time to start
+        return;
+    }
+    float targetTheta;
+    float deltaTheta;
+    float motorPower;
+    float prevMotorPower = 0;
+    float startTheta = getAngle(false);
+    bool settling = false;
+    std::optional<float> prevRawDeltaTheta = std::nullopt;
+    std::optional<float> prevDeltaTheta = std::nullopt;
+    std::uint8_t compState = pros::competition::get_status();
+    Timer timer(timeout);
+    PIDcontroller* angularPID;
+    if (mogoValue){
+        angularPID = &mogoAngularController;
+    } else {
+        angularPID = &angularController;
+    }
+    angularPID->resetPID();
+
+    lateralLargeExit.reset();
+    lateralSmallExit.reset();
+    // get original braking mode of that side of the drivetrain so we can set it back to it after this motion ends
+    pros::MotorBrake brakeMode = (lockedSide == DriveSide::LEFT)
+                                     ? LDrive.get_brake_mode_all().at(0)
+                                     : RDrive.get_brake_mode_all().at(0);
+    // set brake mode of the locked side to hold
+    if (lockedSide == DriveSide::LEFT) LDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+    else RDrive.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+
+    // main loop
+    while (!timer.isDone() && !angularLargeExit.getExit() && !angularSmallExit.getExit()) {
+        // update variables
+        Pose pose = Pose(getX(), getY(), getAngle(false));
+        pose.theta = fmod(pose.theta, 360);
+
+        targetTheta = theta;
+
+        // check if settling
+        const float rawDeltaTheta = angleError(targetTheta, pose.theta, false);
+        if (prevRawDeltaTheta == std::nullopt) prevRawDeltaTheta = rawDeltaTheta;
+        if (sgn(rawDeltaTheta) != sgn(prevRawDeltaTheta)) settling = true;
+        prevRawDeltaTheta = rawDeltaTheta;
+
+        // calculate deltaTheta
+        if (settling) deltaTheta = angleError(targetTheta, pose.theta, false);
+        else deltaTheta = angleError(targetTheta, pose.theta, false, params.direction);
+        if (prevDeltaTheta == std::nullopt) prevDeltaTheta = deltaTheta;
+
+        // motion chaining
+        if (params.minSpeed != 0 && fabs(deltaTheta) < params.earlyExitRange) break;
+        if (params.minSpeed != 0 && sgn(deltaTheta) != sgn(prevDeltaTheta)) break;
+
+        // calculate the speed
+        motorPower = angularPID->PID(deltaTheta);
+        angularLargeExit.update(deltaTheta);
+        angularSmallExit.update(deltaTheta);
+
+        // cap the speed
+        if (motorPower > params.maxSpeed) motorPower = params.maxSpeed;
+        else if (motorPower < -params.maxSpeed) motorPower = -params.maxSpeed;
+        if (motorPower < 0 && motorPower > -params.minSpeed) motorPower = -params.minSpeed;
+        else if (motorPower > 0 && motorPower < params.minSpeed) motorPower = params.minSpeed;
+        prevMotorPower = motorPower;
+
+        // move the drivetrain
+        if (lockedSide == DriveSide::LEFT) {
+            RDrive.move(-motorPower);
+            LDrive.brake();
+        } else {
+            LDrive.move(motorPower);
+            RDrive.brake();
+        }
+
+        // delay to save resources
+        pros::delay(10);
+    }
+
+    // set the brake mode of the locked side of the drivetrain to its
+    // original value
+    if (lockedSide == DriveSide::LEFT) LDrive.set_brake_mode_all(brakeMode);
+    else RDrive.set_brake_mode_all(brakeMode);
+    // stop the drivetrain
+    LDrive.move(0);
+    RDrive.move(0);
+}
 
 void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool async) {
     params.earlyExitRange = fabs(params.earlyExitRange);
