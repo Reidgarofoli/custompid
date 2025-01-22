@@ -65,11 +65,11 @@ void lifting() {
         if (currentPosition < 0){
             currentPosition = 0;
         }
-        if (currentPosition > 1350){
-            currentPosition = 1350;
+        if (currentPosition > 680){
+            currentPosition = 680;
         }
         //lifter.move_absolute(currentPosition, 200);
-        lifter.move(arm.PID(currentPosition - lifter.get_position()));
+        lifter.move(arm.PID(currentPosition - ((float)lifterRotation.get_position()/100)));
         /*
         Color sort
         */
@@ -119,9 +119,11 @@ void printing(){
         }
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 400, 14, "%d", auton);
 
-        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "x:%f", chassis.getPose().x);
-        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", chassis.getPose().y);
-        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", chassis.getPose().theta);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "x:%f", getX());
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", getY());
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", getAngle(false));
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "fDist:%d", fDist.get());
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "rDist:%d", rDist.get());
 
         ///pros::lcd::print(1, "x:%f, y:%f, theta:%f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
         // pros::lcd::print(2, "color:%f  proximity:%d", colorSensor.get_hue(), colorSensor.get_proximity());
@@ -132,7 +134,7 @@ void printing(){
 
 void initialize() {
     // chassis.calibrate();
-
+    lifterRotation.set_position(0);
     pros::Task liftTask(lifting);
     pros::Task infoTask(printing);
     updateLeds();
@@ -140,6 +142,7 @@ void initialize() {
     drawField();
     if (team == 'r'){pros::screen::set_pen(0xff0000);} else {pros::screen::set_pen(0x0000ff);}
     pros::screen::fill_rect(340, 55, 468, 90);
+    initializeTracking();
 }
 
 void disabled() {}
@@ -271,10 +274,10 @@ void opcontrol() {
         }
 
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-            currentPosition+=50;
+            currentPosition+=10;
         }
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)){
-            currentPosition-=50;
+            currentPosition-=10;
         }
         pros::delay(20);
     }

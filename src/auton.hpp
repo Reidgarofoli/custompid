@@ -4,7 +4,7 @@
 
 void auton0(){
     if (team == 'r'){    
-
+        moveToPoint(0, 10, 100000, {}, false);
     } else {       
 
     }

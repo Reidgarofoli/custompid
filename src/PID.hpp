@@ -71,8 +71,8 @@ PIDcontroller mogoLateralController(
 	70 // kD
 );
 
-ExitCondition lateralSmallExit(1, 100);
-ExitCondition lateralLargeExit(1, 500);
+ExitCondition lateralSmallExit(0, 100);
+ExitCondition lateralLargeExit(0, 500);
 
 
 enum class AngularDirection {
@@ -150,8 +150,9 @@ void tracking(){
     currentPos.y = 0;
     currentPos.theta = 0;
     while (true) {
-        currentPos.x = -xPosGlobal;
+        currentPos.x = xPosGlobal;
         currentPos.y = yPosGlobal;
+        printf("x:%f y:%f\n", -xPosGlobal, yPosGlobal);
         currentPos.theta += inertial.get_rotation() - lastInertial;
         lastInertial = inertial.get_rotation();
 
@@ -227,16 +228,16 @@ void setPose(float x, float y, float theta){
 void resetPositionFromDistance(int offsetX, int offsetY){
     switch(closestNum(angles, currentPos.theta)){
         case 0:
-            setPose((float)lDist.get()/25.4, (float)fDist.get()/-25.4, getAngle(false));
+            setPose((float)rDist.get()/25.4, (float)fDist.get()/-25.4, getAngle(false));
             break;
         case 90:
-            setPose((float)fDist.get()/-25.4, (float)lDist.get()/25.4, getAngle(false));
+            setPose((float)fDist.get()/-25.4, (float)rDist.get()/25.4, getAngle(false));
             break;
         case 180:
-            setPose((float)lDist.get()/-25.4, (float)fDist.get()/25.4, getAngle(false));
+            setPose((float)rDist.get()/-25.4, (float)fDist.get()/25.4, getAngle(false));
             break;
         case 270:
-            setPose((float)fDist.get()/25.4, (float)lDist.get()/-25.4, getAngle(false));
+            setPose((float)fDist.get()/25.4, (float)rDist.get()/-25.4, getAngle(false));
             break;
     }
 }
@@ -442,9 +443,9 @@ void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool a
         prevSide = side;
 
         // calculate error
-        const float adjustedRobotTheta = params.forwards ? currentPos.theta : currentPos.theta + M_PI;
-        const float angularError = angleError(adjustedRobotTheta, currentPos.angle(target));
-        float lateralError = currentPos.distance(target) * cos(angleError(currentPos.theta, currentPos.angle(target)));
+        const float adjustedRobotTheta = params.forwards ? getAngle(false) : getAngle(false) + 180;
+        const float angularError = adjustedRobotTheta - currentPos.angle(target);
+        float lateralError = currentPos.distance(target)* (cos(degToRad(adjustedRobotTheta - currentPos.angle(target))));
 
         // update exit conditions
         lateralSmallExit.update(lateralError);
@@ -452,7 +453,7 @@ void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool a
 
         // get output from PIDs
         float lateralOut = lateralPID->PID(lateralError);
-        float angularOut = angularPID->PID(radToDeg(angularError));
+        float angularOut = angularPID->PID(angularError);
         if (close) angularOut = 0;
 
         // apply restrictions on angular speed
@@ -475,13 +476,16 @@ void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool a
         prevLateralOut = lateralOut;
 
         // ratio the speeds to respect the max speed
-        float leftPower = lateralOut + angularOut;
-        float rightPower = lateralOut - angularOut;
+        float leftPower = lateralOut - angularOut;
+        float rightPower = lateralOut + angularOut;
         const float ratio = std::max(std::fabs(leftPower), std::fabs(rightPower)) / params.maxSpeed;
         if (ratio > 1) {
             leftPower /= ratio;
             rightPower /= ratio;
         }
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "a_err:%f", angularError);
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "angle:%f", currentPos.angle(target));
+        // pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", getAngle(false));
 
         // move the drivetrain
         LDrive.move(leftPower);
@@ -496,3 +500,68 @@ void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool a
     RDrive.move(0);
     pros::delay(10);
 }
+// void moveToPoint(float newPoseX, float newPoseY, int timeout,bool direction = true, int minspeed = 0, int maxspeed = 127, float earlyExitRange = 0){
+//     lateralLargeExit.reset();
+//     bool close = false;
+
+//     Pose target(newPoseX, newPoseY);
+//     Pose start(currentPos.x, currentPos.y);
+
+//     while (!lateralSmallExit.getExit()) {
+//         target.theta = currentPos.angle(target);
+//         float distTarget = currentPos.distance(target);
+
+
+//         if (distTarget < 7.5) {
+//             close = true;
+//         }
+
+//         const float adjustedRobotTheta = direction ? getAngle(false) : getAngle(false) + 180;
+//         const float angularError = adjustedRobotTheta - currentPos.angle(target);
+//         float lateralError = currentPos.distance(target)* (cos(degToRad(adjustedRobotTheta - currentPos.angle(target))));
+
+//         lateralLargeExit.update(lateralError);
+//         float lateralOut = lateralController.PID(lateralError, minspeed, maxspeed);
+//         float angularOut = angularController.PID(angularError, minspeed, maxspeed);
+        
+
+//         if (close) angularOut = 0;
+
+//         // apply restrictions on angular speed
+//         angularOut = clamp(angularOut, -maxspeed, maxspeed);
+
+//         lateralOut = clamp(lateralOut, minspeed, maxspeed);
+
+//         // prevent moving in the wrong direction
+//         if (direction && !close) lateralOut = std::fmax(lateralOut, 0);
+//         else if (!direction && !close) lateralOut = std::fmin(lateralOut, 0);
+
+//         // constrain lateral output by the minimum speed
+//         if (direction && lateralOut < minspeed && lateralOut > 0) lateralOut = minspeed;
+//         if (!direction && -lateralOut < minspeed && lateralOut < 0) lateralOut = -minspeed;
+
+//         if (start.distance(target)<currentPos.distance(start)){
+//             lateralOut = -lateralOut;
+//         }
+
+
+//         // ratio the speeds to respect the max speed
+//         float leftPower = lateralOut - angularOut;
+//         float rightPower = lateralOut + angularOut;
+//         // move the drivetrain
+//         LDrive.move(-leftPower);
+//         RDrive.move(rightPower);
+//         // delay to save resources
+
+//         pros::lcd::print(2, "angularError:%f", angularError);
+//         pros::lcd::print(3, "distance:%f", distTarget);
+//         pros::lcd::print(4, "leftPower:%f", leftPower);
+//         pros::lcd::print(5, "RightPower:%f", rightPower);
+
+//         pros::delay(10);
+//     }
+
+//     // reset
+//     lateralController.resetPID();
+// 	angularController.resetPID();
+// }
