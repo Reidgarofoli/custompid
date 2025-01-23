@@ -15,7 +15,7 @@ pros::Distance distSensor(18);
 pros::Distance rDist(16);
 pros::Distance fDist(14);
 
-pros::Rotation lifterRotation(13);
+pros::Rotation lifterRotation(12);
 //pros::Distance front_wall_dist(3);
 
 pros::Rotation vTracking(-15);
@@ -35,8 +35,8 @@ pros::adi::Led leds(4, 17+15);
 const int lowPos  = 0;
 bool autonHappened;
 const int midPos  = 100;
-const int highPos = 360;
-const int outPos = 450;
+const int highPos = 380;
+const int outPos = 500;
 int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;

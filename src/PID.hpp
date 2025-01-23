@@ -71,8 +71,8 @@ PIDcontroller mogoLateralController(
 	70 // kD
 );
 
-ExitCondition lateralSmallExit(0, 100);
-ExitCondition lateralLargeExit(0, 500);
+ExitCondition lateralSmallExit(1, 100);
+ExitCondition lateralLargeExit(3, 500);
 
 
 enum class AngularDirection {
@@ -297,11 +297,38 @@ struct MoveToPointParams {
      * non-zero.*/
     float earlyExitRange = 0;
 };
+pros::Mutex mutex;
+bool motionRunning = false;
+bool motionQueued = false;
+float distTraveled = 0;
+bool isInMotion() { return motionRunning; }
+void requestMotionStart() {
+    if (isInMotion()) motionQueued = true; // indicate a motion is queued
+    else motionRunning = true; // indicate a motion is running
+
+    // wait until this motion is at front of "queue"
+    mutex.take(TIMEOUT_MAX);
+
+    // this->motionRunning should be true
+    // and this->motionQueued should be false
+    // indicating this motion is running
+}
+void endMotion() {
+    // move the "queue" forward 1
+    motionRunning = motionQueued;
+    motionQueued = false;
+
+    // permit queued motion to run
+    mutex.give();
+}
 
 /* MOVING FUNCTIONS */
 template <typename T> constexpr T sgn(T value) { return value < 0 ? -1 : 1; }
 void turnToHeading(float theta, int timeout, TurnToHeadingParams params, bool async) {
     params.minSpeed = std::abs(params.minSpeed);
+    requestMotionStart();
+    // were all motions cancelled?
+    if (!motionRunning) return;
     // if the function is async, run it in a new task
     if (async) {
         pros::Task task([&]() { turnToHeading(theta, timeout, params, false); });
@@ -327,9 +354,9 @@ void turnToHeading(float theta, int timeout, TurnToHeadingParams params, bool as
     }
     angularPID->resetPID();
 
-    lateralLargeExit.reset();
-    lateralSmallExit.reset();
-
+    angularLargeExit.reset();
+    angularSmallExit.reset();
+    pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 200, "angle turn:%f", theta);
     // main loop
     while (!timer.isDone() && !angularLargeExit.getExit() && !angularSmallExit.getExit()) {
         // update variables
@@ -375,6 +402,8 @@ void turnToHeading(float theta, int timeout, TurnToHeadingParams params, bool as
     // stop the drivetrain
     LDrive.move(0);
     RDrive.move(0);
+    endMotion();
+    pros::delay(10);
 }
 void swingToHeading(float theta, DriveSide lockedSide, int timeout, SwingToHeadingParams params,
                                      bool async) {
@@ -403,8 +432,8 @@ void swingToHeading(float theta, DriveSide lockedSide, int timeout, SwingToHeadi
     }
     angularPID->resetPID();
 
-    lateralLargeExit.reset();
-    lateralSmallExit.reset();
+    angularLargeExit.reset();
+    angularSmallExit.reset();
     // get original braking mode of that side of the drivetrain so we can set it back to it after this motion ends
     pros::MotorBrake brakeMode = (lockedSide == DriveSide::LEFT)
                                      ? LDrive.get_brake_mode_all().at(0)
@@ -472,6 +501,8 @@ void swingToHeading(float theta, DriveSide lockedSide, int timeout, SwingToHeadi
 
 void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool async) {
     params.earlyExitRange = fabs(params.earlyExitRange);
+    requestMotionStart();
+    if (!motionRunning) return;
     // if the function is async, run it in a new task
     if (async) {
         pros::Task task([&]() { moveToPoint(x, y, timeout, params, false); });
@@ -538,13 +569,10 @@ void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool a
         // calculate error
         const float adjustedRobotTheta = params.forwards ? getAngle(false) : getAngle(false) + 180;
         const float angularError = angleError(adjustedRobotTheta, currentPos.angle(target), false);
-        float lateralError = currentPos.distance(target)* (cos(degToRad(adjustedRobotTheta - currentPos.angle(target))));
-
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "a_err:%f", angularError);
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "adjust:%f", adjustedRobotTheta);
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "latErr:%f", lateralError);
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "angle:%f", currentPos.angle(target));
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "rDist:%f", rDist.get()/25.4);
+        float lateralError = currentPos.distance(target)*(cos(degToRad(adjustedRobotTheta - currentPos.angle(target))));
+        if(!params.forwards) {
+            lateralError = -lateralError;
+        }
 
         // update exit conditions
         lateralSmallExit.update(lateralError);
@@ -589,6 +617,7 @@ void moveToPoint(float x, float y, int timeout, MoveToPointParams params, bool a
         // move the drivetrain
         LDrive.move(leftPower);
         RDrive.move(rightPower);
+        endMotion();
 
         // delay to save resources
         pros::delay(10);
