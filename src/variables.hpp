@@ -1,4 +1,5 @@
 #include "main.h"
+#include "lemlib/api.hpp"
 
 double radToDeg(double a){
     return a * 180 / M_PI;
@@ -50,7 +51,67 @@ int pagenums = 2;
 int ejectDelay = 50;
 std::string space = "                                ";
 
+lemlib::Drivetrain drivetrain {
+	&LDrive, // left motor group
+	&RDrive, // right motor group
+	12.5, // 14.5 inch track width
+	lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
+	450, // drivetrain rpm is 450
+	8 // Its 8 because we have traction wheels
+};
 
+// left tracking using drive motors
+lemlib::TrackingWheel vertical_tracking(
+	&vTracking, //Look at the left drive
+	2.0, //2 inch tracking wheels
+	-0.1686 //0.25 incheas left of the center
+);
+
+// right tracking using drive motors
+lemlib::TrackingWheel horizontal_tracking(
+	&hTracking, //Look at the left drive
+	2.0, //2 inch tracking wheels
+	1.7485 //1.75 incheas back of the center
+);
+
+		
+// Sensors for odometry 
+lemlib::OdomSensors sensors {
+	&vertical_tracking, // vertical tracking wheel 1
+	nullptr, // vertical tracking wheel 2
+	&horizontal_tracking, // horizontal tracking wheel
+	nullptr, // no second horizontal tracking wheel
+	&inertial // inertial sensor
+};
+
+
+// forward/backward PID
+lemlib::ControllerSettings lateralController { 
+	12, // proportional gain (kP)
+	0, // integral gain (kI)
+	60, // derivative gain (kD)
+	0, // anti windup
+	0.5, // small error range, in inches
+	100, // small error range timeout, in milliseconds
+	2.5, // large error range, in inches
+	500, // large error range timeout, in milliseconds
+	0 // maximum acceleration (slew)
+};
+
+// turning PID
+lemlib::ControllerSettings angularController {
+	5, // proportional gain (kP)
+	0, // integral gain (kI)
+	48, // derivative gain (kD)
+	0, // anti windup
+	1, // small error range, in inches
+	100, // small error range timeout, in milliseconds
+	3, // large error range, in inches
+	500, // large error range timeout, in milliseconds
+	0 // maximum acceleration (slew)
+};
+
+lemlib::Chassis chassis(drivetrain, lateralController, angularController, sensors);
 
 
 struct Pose {

@@ -9,7 +9,7 @@
 #include <vector>
 int startTime = 0;
 double lastColor = 0;
-PIDcontroller arm(0.8, 0.0, 1.0);
+lemlib::PID arm(0.8, 0.0, 1.0);
 void updateLeds(){
     if (team == 'r'){
         leds.set_all(0xff0000);
@@ -69,7 +69,7 @@ void lifting() {
             currentPosition = 680;
         }
         //lifter.move_absolute(currentPosition, 200);
-        lifter.move(arm.PID(currentPosition - ((float)lifterRotation.get_position()/100)));
+        lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
         /*
         Color sort
         */
@@ -119,9 +119,9 @@ void printing(){
         }
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 400, 14, "%d", auton);
 
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "x:%f", getX());
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", getY());
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", getAngle(false));
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "x:%f", chassis.getPose().x);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", chassis.getPose().y);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", chassis.getPose().theta);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "fDist:%f", fDist.get()/25.4);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "rDist:%f", rDist.get()/25.4);
 
@@ -142,7 +142,11 @@ void initialize() {
     drawField();
     if (team == 'r'){pros::screen::set_pen(0xff0000);} else {pros::screen::set_pen(0x0000ff);}
     pros::screen::fill_rect(340, 55, 468, 90);
-    initializeTracking();
+    angles.push_back(0);
+    angles.push_back(90);
+    angles.push_back(180);
+    angles.push_back(270);
+    chassis.calibrate();
 }
 
 void disabled() {}
@@ -239,6 +243,7 @@ void opcontrol() {
                     currentPosition = highPos;
                     break;
                 case highPos:
+                    intake.move(-127);
                     currentPosition = lowPos;
                     break;
                 default:
