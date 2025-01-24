@@ -78,8 +78,15 @@ void posecheck(){
 void auton0(){
     if (team == 'r'){
         chassis.setPose(0,0,0);
+        currentPosition=midPos;//
+        pros::delay(500 );//
+        intake.move(127);//
+        pros::delay(250);//
+
         currentPosition = outPos + 20;
+        intake.move(-30);//
         pros::delay(400);
+        intake.move(0);//
         chassis.moveToPoint(0, -5, 1000, {}, false);
         currentPosition = lowPos;
         chassis.turnToHeading(270, 1000, {}, false);
@@ -90,8 +97,10 @@ void auton0(){
         chassis.turnToHeading(180, 1000, {}, false);
         intake.move(127);
         chassis.moveToPoint(22, -25, 1000, {}, false);
+        pros::delay(500);
         chassis.turnToHeading(135, 1000, {}, false);
         currentPosition = midPos;
+        intake.move(127);
         chassis.moveToPoint(55, -50, 2000, {}, false);
         chassis.swingToHeading(90, DriveSide::LEFT, 1000, {}, false);
         chassis.moveToPoint(60, -50, 2000, {}, false);
@@ -123,9 +132,23 @@ void auton0(){
         chassis.moveToPoint(-24, -25, 4000, {.maxSpeed=60}, false);
         chassis.turnToHeading(-126, 1000, {}, false);
         currentPosition = midPos;
-        chassis.moveToPoint(-59, -46, 4000, {}, false);
+        chassis.moveToPoint(-55, -49, 4000, {}, false);
         chassis.turnToHeading(-90, 1000, {}, false);
-        chassis.moveToPoint(-61, -46, 4000, {}, false);
+        chassis.moveToPoint(-59, -52, 4000, {}, false);
+         currentPosition = highPos;
+        intake.move(-30);
+        pros::delay(500);
+        chassis.moveToPoint(-43, -50, 4000, {.forwards=false}, false);
+        chassis.turnToHeading(0,200,{},false);
+        intake.move(127);
+        chassis.moveToPoint(-49,-18,4000,{.maxSpeed=50},false);
+        pros::delay(100);
+                chassis.moveToPoint(-49,6,4000,{.maxSpeed=50},false);
+
+        chassis.turnToHeading(118,2000,{},false);
+        chassis.moveToPoint(-57,11,4000,{.forwards=false},false);
+        mogoValue = false;
+        mogo.set_value(mogoValue);  //
     } else {
         chassis.setPose(0,0,0);
         chassis.moveToPoint(0, 30, 1000, {}, false);
