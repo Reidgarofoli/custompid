@@ -229,7 +229,34 @@ void auton0(){ // solo win point
         chassis.moveToPoint(0, 31, 1000, {}, false);
         currentPosition = highPos;
     } else {
-             
+        chassis.setPose(0,0,270);
+        currentPosition = midPos;
+        chassis.moveToPoint(-3, 0, 1000, {}, false);
+        intake.move(127);
+        chassis.swingToHeading(210, DriveSide::LEFT, 1000, {}, false);
+        intake.move(-30);
+        currentPosition = outPos+15;
+        pros::delay(500);
+        chassis.moveToPoint(-0.5, 10, 2000, {.forwards=false}, false);
+        chassis.swingToHeading(247, DriveSide::RIGHT, 1000, {}, false);
+        doinker.set_value(true);
+        pros::delay(200);
+        chassis.swingToHeading(180, DriveSide::RIGHT, 1000, {}, false);
+        doinker.set_value(false);
+        pros::delay(200);
+        
+        chassis.moveToPoint(3, 30, 1000, {.forwards=false, .maxSpeed=50, .minSpeed=30, .earlyExitRange=1}, false);
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        intake.move(127);
+        chassis.moveToPoint(-3, 0, 1000, {}, false);
+        chassis.moveToPoint(-3, 20, 1000, {.forwards = false}, false);
+        chassis.turnToHeading(90, 1000, {}, false);
+        chassis.moveToPoint(22, 25, 1000, {}, false);
+        currentPosition = 290;
+        chassis.turnToHeading(270, 1000, {}, false);
+        chassis.moveToPoint(0, 31, 1000, {}, false);
+        currentPosition = highPos;  
     }
 }
 void auton1(){ //goal rush
