@@ -54,6 +54,7 @@ void drawField(){
         default:
             pros::screen::set_pen(0x000000);
             pros::screen::fill_rect(0,0,240,240);
+            pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 220, "no auton");
             break;
     }
 }
@@ -65,8 +66,8 @@ void lifting() {
         if (currentPosition < 0){
             currentPosition = 0;
         }
-        if (currentPosition > 680){
-            currentPosition = 680;
+        if (currentPosition > 680-15){
+            currentPosition = 680-15;
         }
         //lifter.move_absolute(currentPosition, 200);
         lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
@@ -75,25 +76,34 @@ void lifting() {
         */
         //hue of 0 is red 240 is blue
         if (colorSort && distSensor.get_distance() < 70){
-            pros::delay(ejectDelay);
+            int startpose = intake.get_position();
+            int EjectingColor = colorSensor.get_hue();
             if (team == 'r'){ //if we are on red team, and sees a ring at the top of the intake
-                if (lastColor < 240) { // if the color is between 0 and 240
-                    if (lastColor > 120){ // check if ring is closer to red or blue
+                if (EjectingColor < 240) { // if the color is between 0 and 240
+                    if (EjectingColor > 120){ // check if ring is closer to red or blue
+                        while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
+                        pros::delay(50);
                     }
                 } else { // if color is between 240, 360
-                    if (lastColor < 300){ // if the color is closer to blue
+                    if (EjectingColor < 300){ // if the color is closer to blue
+                        while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
+                        pros::delay(50);
                     }
                 }
             } else if (team == 'b'){ //if we are on red team, and sees a ring at the top of the intake
-                if (lastColor < 240) { // if the color is between 0 and 240
-                    if (lastColor < 120){ // check if ring is closer to red or blue
+                if (EjectingColor < 240) { // if the color is between 0 and 240
+                    if (EjectingColor < 120){ // check if ring is closer to red or blue
+                        while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
+                        pros::delay(50);
                     }
                 } else { // if color is between 240, 360
-                    if (lastColor > 300){ // if the color is closer to blue
+                    if (EjectingColor > 300){ // if the color is closer to blue
+                        while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
+                        pros::delay(50);
                     }
                 }
             }
@@ -101,14 +111,9 @@ void lifting() {
             intake.move(127);
         }
 
-        if (colorSensor.get_proximity() > 0){
-            lastColor = colorSensor.get_hue();
-        }
-
         pros::delay(20);
     }
 }
-
 
 void printing(){
     while (true) {
@@ -117,13 +122,15 @@ void printing(){
         } else {
             leds.set_all(0x00ff00);
         }
+
+        if (team == 'r'){pros::screen::set_pen(0xff0000);} else {pros::screen::set_pen(0x0000ff);}
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 400, 14, "%d", auton);
 
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 100, "x:%f", chassis.getPose().x);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", chassis.getPose().y);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", chassis.getPose().theta);
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "fDist:%f", fDist.get()/25.4);
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "rDist:%f", rDist.get()/25.4);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "colorProx:%d", colorSensor.get_proximity());
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "colorColor:%f", colorSensor.get_hue());
 
         ///pros::lcd::print(1, "x:%f, y:%f, theta:%f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
         // pros::lcd::print(2, "color:%f  proximity:%d", colorSensor.get_hue(), colorSensor.get_proximity());
@@ -137,6 +144,7 @@ void initialize() {
     lifterRotation.set_position(0);
     pros::Task liftTask(lifting);
     pros::Task infoTask(printing);
+    colorSensor.set_led_pwm(100);
     updateLeds();
     drawImage("brainBackground.png", 0, 0);
     drawField();
@@ -233,7 +241,6 @@ void opcontrol() {
         int turn = -master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         LDrive.move(dir - turn);
         RDrive.move(dir + turn);
-
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
             switch (currentPosition){
                 case lowPos:
@@ -251,22 +258,22 @@ void opcontrol() {
                     break;
             }
         }
-
         //intake
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-            intake.move(127);
+            colorSort = true;
+            // intake.move(127);
         } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
+            colorSort = false;
             intake.move(-127);
         } else {
             intake.move(0);
+            colorSort = false;
         }
-
         //doinker
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)){
             doinkVal = !doinkVal;
             doinker.set_value(doinkVal);
         }
-
         //mogo
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){
             mogoValue = !mogoValue;
@@ -277,13 +284,15 @@ void opcontrol() {
                 leds.set_all(0x00ff00);
             }
         }
-
+        //480 degrees per second
+        
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-            currentPosition+=10;
+            currentPosition+=40;
         }
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)){
-            currentPosition-=10;
+            currentPosition-=40;
         }
+
         pros::delay(20);
     }
 }

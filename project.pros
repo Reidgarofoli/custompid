@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "YHS skills",
+    "project_name": "YHS code",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -257,7 +257,7 @@
     "upload_options": {
       "after": "screen",
       "icon": "robot",
-      "slot": 7,
+      "slot": 1,
       "description": "dont ask me"
     },
     "use_early_access": false

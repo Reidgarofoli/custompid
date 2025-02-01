@@ -11,44 +11,46 @@ double degToRad(double a){
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller info(pros::E_CONTROLLER_PARTNER);
 pros::Imu inertial(20); // port 10
-pros::Optical colorSensor(14);
-pros::Distance distSensor(18);
+pros::Optical colorSensor(13);
+pros::Distance distSensor(1);
 pros::Distance rDist(16);
-pros::Distance fDist(14);
+pros::Distance fDist(23);
 
 pros::Rotation lifterRotation(12);
 //pros::Distance front_wall_dist(3);
 
 pros::Rotation vTracking(-15);
-pros::Rotation hTracking(18);
+pros::Rotation hTracking(14);
 
 pros::MotorGroup LDrive({-4, -6, 7}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::rotations);
 pros::MotorGroup RDrive({2, -8, 11}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::rotations);
 
 pros::MotorGroup lifter({9, -10}, pros::MotorGearset::green, pros::MotorUnits::degrees);
-pros::Motor intake(-17, pros::MotorGearset::blue, pros::MotorUnits::degrees);
+pros::Motor intake(17, pros::MotorGearset::blue, pros::MotorUnits::degrees);
 
 pros::adi::DigitalOut mogo(8); // hi this is good for you ;) 
-pros::adi::DigitalOut doinker(2);
+pros::adi::DigitalOut doinker(1);
+pros::adi::DigitalOut yoinker(2);
 
 pros::adi::Led leds(4, 17+15);
 
 const int lowPos  = 0;
 bool autonHappened;
-const int midPos  = 100;
-const int highPos = 380;
-const int outPos = 500;
+const int midPos  = 100-12+10;
+const int highPos = 380-12;
+const int outPos = 500-12;
 int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;
 bool doinkVal = false;
-int auton = 0;
+int auton = 6;
 int maxauto = 6;
 char team = 'r';
 bool confirm = false;
 int page = 0;
 int pagenums = 2;
-int ejectDelay = 50;
+int ejectDelay = 90;
+
 std::string space = "                                ";
 
 lemlib::Drivetrain drivetrain {
@@ -87,7 +89,7 @@ lemlib::OdomSensors sensors {
 
 // forward/backward PID
 lemlib::ControllerSettings lateralController { 
-	12, // proportional gain (kP)
+	11, // proportional gain (kP)
 	0, // integral gain (kI)
 	60, // derivative gain (kD)
 	0, // anti windup
