@@ -5,7 +5,8 @@
       "includePath": [
         "${workspaceFolder}/**",
         "/Users/student/Desktop/coding/custom pid+odom/include",
-        "/Users/student/Desktop/custompid/include"
+        "/Users/student/Desktop/custompid/include",
+        "/Users/student/Desktop/everything/coding/custom pid+odom/include"
       ],
       "defines": [
         "_DEBUG",
@@ -21,7 +22,7 @@
       ],
       "browse": {
         "path": [
-          "/Users/student/Desktop/coding/custom pid+odom"
+          "/Users/student/Desktop/everything/coding/custom pid+odom"
         ],
         "limitSymbolsToIncludedHeaders": true,
         "databaseFilename": ""

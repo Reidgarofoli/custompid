@@ -9,7 +9,7 @@
 #include <vector>
 int startTime = 0;
 double lastColor = 0;
-lemlib::PID arm(0.8, 0.0, 1.0);
+lemlib::PID arm(1.5, 0.0, 0.0);
 void updateLeds(){
     if (team == 'r'){
         leds.set_all(0xff0000);
@@ -66,8 +66,8 @@ void lifting() {
         if (currentPosition < 0){
             currentPosition = 0;
         }
-        if (currentPosition > 680-15){
-            currentPosition = 680-15;
+        if (currentPosition > 355){
+            currentPosition = 355;
         }
         //lifter.move_absolute(currentPosition, 200);
         lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
@@ -111,16 +111,24 @@ void lifting() {
             intake.move(127);
         }
 
+        // anti jam
+        // if (intake.get_efficiency() < 0.01 && currentPosition != midPos){
+        //     intake.move(-127);
+        //     pros::delay(50);
+        //     intake.move(127);
+        // }
         pros::delay(20);
     }
 }
 
 void printing(){
     while (true) {
-        if (mogoValue){
-            updateLeds();
-        } else {
-            leds.set_all(0x00ff00);
+        if (auton != 5){
+            if (mogoValue){
+                updateLeds();
+            } else {
+                leds.set_all(0x00ff00);
+            }
         }
 
         if (team == 'r'){pros::screen::set_pen(0xff0000);} else {pros::screen::set_pen(0x0000ff);}
@@ -138,7 +146,93 @@ void printing(){
         pros::delay(50);
     }
 }
+long HSBtoRGB(float _hue, float _sat, float _brightness) {
+    float red = 0.0;
+    float green = 0.0;
+    float blue = 0.0;
+    
+    if (_sat == 0.0) {
+        red = _brightness;
+        green = _brightness;
+        blue = _brightness;
+    } else {
+        if (_hue == 360.0) {
+            _hue = 0;
+        }
 
+        int slice = _hue / 60.0;
+        float hue_frac = (_hue / 60.0) - slice;
+
+        float aa = _brightness * (1.0 - _sat);
+        float bb = _brightness * (1.0 - _sat * hue_frac);
+        float cc = _brightness * (1.0 - _sat * (1.0 - hue_frac));
+        
+        switch(slice) {
+            case 0:
+                red = _brightness;
+                green = cc;
+                blue = aa;
+                break;
+            case 1:
+                red = bb;
+                green = _brightness;
+                blue = aa;
+                break;
+            case 2:
+                red = aa;
+                green = _brightness;
+                blue = cc;
+                break;
+            case 3:
+                red = aa;
+                green = bb;
+                blue = _brightness;
+                break;
+            case 4:
+                red = cc;
+                green = aa;
+                blue = _brightness;
+                break;
+            case 5:
+                red = _brightness;
+                green = aa;
+                blue = bb;
+                break;
+            default:
+                red = 0.0;
+                green = 0.0;
+                blue = 0.0;
+                break;
+        }
+    }
+
+    long ired = red * 255.0;
+    long igreen = green * 255.0;
+    long iblue = blue * 255.0;
+    
+    return long((ired << 16) | (igreen << 8) | (iblue));
+}
+
+int counter = 0;
+int numColors = 255;
+void cycle() {
+    for (int i = 0; i < 31; i++){
+        float colorNumber = (counter + i) % (numColors * 2) > numColors ? (counter + i) % (numColors * 2) - numColors: (counter + i) % (numColors * 2);
+
+        float saturation = 1;
+        float brightness = 1;
+        float hue = (colorNumber / float(numColors)) * 360;
+        long color = HSBtoRGB(hue, saturation, brightness);
+        int red = color >> 16 & 255;
+        int green = color >> 8 & 255;
+        int blue = color & 255;
+        leds.set_pixel((red*65536) + (green*256) + blue, i);
+
+                //leds[i] = CRGB ( red, green, blue );
+    }
+    
+    counter = (counter + 1) % (numColors * 2);
+}
 void initialize() {
     // chassis.calibrate();
     lifterRotation.set_position(0);
@@ -233,10 +327,14 @@ void getTouched(){
         }
     }
 }
+bool intake_moving = false;
 void opcontrol() {
     currentPosition = lowPos;
     pros::screen::touch_callback(getTouched, pros::E_TOUCH_PRESSED);
     while (true) {
+        if (auton == 5){
+            cycle();
+        }
         int dir = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int turn = -master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         LDrive.move(dir - turn);
@@ -247,10 +345,10 @@ void opcontrol() {
                     currentPosition = midPos;
                     break;
                 case midPos:
+                    intake_moving = true;
                     currentPosition = highPos;
                     break;
                 case highPos:
-                    intake.move(-127);
                     currentPosition = lowPos;
                     break;
                 default:
@@ -260,13 +358,19 @@ void opcontrol() {
         }
         //intake
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-            colorSort = true;
-            // intake.move(127);
+            colorSort = false;
+            intake.move(127);
+            intake_moving=false;
         } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
             colorSort = false;
             intake.move(-127);
-        } else {
+            intake_moving=false;
+        } else if (!intake_moving){
             intake.move(0);
+            colorSort = false;
+        }
+        if (intake_moving){
+            intake.move(-30);
             colorSort = false;
         }
         //doinker
@@ -287,10 +391,10 @@ void opcontrol() {
         //480 degrees per second
         
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-            currentPosition+=40;
+            currentPosition+=10;
         }
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)){
-            currentPosition-=40;
+            currentPosition-=10;
         }
 
         pros::delay(20);

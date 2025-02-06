@@ -16,29 +16,29 @@ pros::Distance distSensor(1);
 pros::Distance rDist(16);
 pros::Distance fDist(23);
 
-pros::Rotation lifterRotation(12);
+pros::Rotation lifterRotation(-17);
 //pros::Distance front_wall_dist(3);
 
 pros::Rotation vTracking(-15);
-pros::Rotation hTracking(14);
+pros::Rotation hTracking(3);
 
 pros::MotorGroup LDrive({-4, -6, 7}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::rotations);
 pros::MotorGroup RDrive({2, -8, 11}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::rotations);
 
-pros::MotorGroup lifter({9, -10}, pros::MotorGearset::green, pros::MotorUnits::degrees);
-pros::Motor intake(17, pros::MotorGearset::blue, pros::MotorUnits::degrees);
+pros::Motor lifter(9, pros::MotorGearset::red, pros::MotorUnits::degrees);
+pros::Motor intake(14, pros::MotorGearset::blue, pros::MotorUnits::degrees);
 
 pros::adi::DigitalOut mogo(8); // hi this is good for you ;) 
 pros::adi::DigitalOut doinker(1);
 pros::adi::DigitalOut yoinker(2);
 
-pros::adi::Led leds(4, 17+15);
+pros::adi::Led leds(4, 31);
 
 const int lowPos  = 0;
 bool autonHappened;
-const int midPos  = 100-12+10;
-const int highPos = 380-12;
-const int outPos = 500-12;
+const int midPos  = 50;
+const int highPos = 205;
+const int outPos = 260;
 int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;
