@@ -84,6 +84,8 @@ void graphing(){
     pros::screen::fill_rect(0,0, 480, 240);
     pros::screen::set_pen(0x000000);
     pros::screen::draw_line(0, -180+240, 480, -180+240);
+    pros::screen::set_pen(0x00ff00);
+    pros::screen::draw_line(0, 120, 480, 120);
     int x = 0, startTime, delayTime;
     while (true) {
         startTime = pros::millis();
@@ -92,6 +94,8 @@ void graphing(){
         pros::screen::draw_pixel(x, -currentPos.theta+240);
         pros::screen::set_pen(0xff0000);
         pros::screen::draw_pixel(x, -currentPos.y*2+240);
+        pros::screen::set_pen(0x00ff00);
+        pros::screen::draw_pixel(x, -(LDrive.get_voltage()/1000)+120);
         x++;
         delayTime = std::max((pros::millis() - startTime)-16.6666, 10.0);
         pros::delay(delayTime);
