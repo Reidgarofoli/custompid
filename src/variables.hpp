@@ -10,7 +10,7 @@ double degToRad(double a){
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller info(pros::E_CONTROLLER_PARTNER);
-pros::Imu inertial(20); // port 10
+pros::Imu inertial(5); // port 10
 pros::Optical colorSensor(13);
 pros::Distance distSensor(1);
 pros::Distance rDist(16);
@@ -46,7 +46,7 @@ bool mogoValue = false;
 bool doinkVal = false;
 int auton = 5;
 int maxauto = 6;
-char team = 'r';
+char team = 'b';
 bool confirm = false;
 int page = 0;
 int pagenums = 2;
@@ -94,23 +94,24 @@ lemlib::ControllerSettings lateralController {
 	0, // integral gain (kI)
 	60, // derivative gain (kD)
 	0, // anti windup
-	0.5, // small error range, in inches
-	100, // small error range timeout, in milliseconds
-	2.5, // large error range, in inches
-	500, // large error range timeout, in milliseconds
+	0, // small error range, in inches
+	0, // small error range timeout, in milliseconds
+	0, // large error range, in inches
+	0, // large error range timeout, in milliseconds
 	0 // maximum acceleration (slew)
 };
 
 // turning PID
+//5 0 62 is good
 lemlib::ControllerSettings angularController {
 	5, // proportional gain (kP)
 	0, // integral gain (kI)
-	48, // derivative gain (kD)
+	62, // derivative gain (kD)
 	0, // anti windup
-	1, // small error range, in inches
-	100, // small error range timeout, in milliseconds
-	3, // large error range, in inches
-	500, // large error range timeout, in milliseconds
+	0, // small error range, in inches
+	0, // small error range timeout, in milliseconds
+	0, // large error range, in inches
+	0, // large error range timeout, in milliseconds
 	0 // maximum acceleration (slew)
 };
 
