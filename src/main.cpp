@@ -66,8 +66,8 @@ void lifting() {
         if (currentPosition < 0){
             currentPosition = 0;
         }
-        if (currentPosition > 355){
-            currentPosition = 355;
+        if (currentPosition > 350){
+            currentPosition = 350;
         }
         //lifter.move_absolute(currentPosition, 200);
         lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
@@ -114,7 +114,7 @@ void lifting() {
         // anti jam
         // if (intake.get_efficiency() < 0.01 && currentPosition != midPos){
         //     intake.move(-127);
-        //     pros::delay(50);
+        //     pros::delay(200);
         //     intake.move(127);
         // }
         pros::delay(20);

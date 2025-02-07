@@ -78,6 +78,86 @@ void posecheck(){
 void updatePosFromSensors(bool left, bool right, bool front, bool back){
     
 }
+void graphing(){
+    lemlib::Pose currentPos = chassis.getPose();
+    pros::screen::set_pen(0xffffff);
+    pros::screen::fill_rect(0,0, 480, 240);
+    pros::screen::set_pen(0x000000);
+    pros::screen::draw_line(0, -180+240, 480, -180+240);
+    int x = 0, startTime, delayTime;
+    while (true) {
+        startTime = pros::millis();
+        currentPos = chassis.getPose();
+        pros::screen::set_pen(0x0000ff);
+        pros::screen::draw_pixel(x, -currentPos.theta+240);
+        pros::screen::set_pen(0xff0000);
+        pros::screen::draw_pixel(x, -currentPos.y*2+240);
+        x++;
+        delayTime = std::max((pros::millis() - startTime)-16.6666, 10.0);
+        pros::delay(delayTime);
+    }
+}
+void moveToDistance(float distance, float angleToHold, int timeout, MoveToDistanceParams params = {}, bool async = true){
+    int targetDist = distance * 25.4;
+    params.earlyExitRange = fabs(params.earlyExitRange);
+    chassis.requestMotionStart();
+    // were all motions cancelled?
+    if (!chassis.motionRunning) return;
+    // if the function is async, run it in a new task
+    if (async) {
+        pros::Task task([&]() { moveToDistance(distance, angleToHold, timeout, params, false); });
+        chassis.endMotion();
+        pros::delay(10); // delay to give the task time to start
+        return;
+    }
+    chassis.lateralPID.reset();
+    chassis.lateralLargeExit.reset();
+    chassis.lateralSmallExit.reset();
+    chassis.angularPID.reset();
+
+    Timer timer(timeout);
+    float lateralOut;
+    float angularOut;
+    float error;
+    while (!timer.isDone() && (!chassis.lateralSmallExit.getExit() && !chassis.lateralLargeExit.getExit()) && chassis.motionRunning) {
+        switch (params.whichDist){
+            case 'f':
+                error = fDist.get() - targetDist;
+                break;
+            case 'l':
+                error = lDist.get() - targetDist;
+                break;
+            case 'r':
+                error = rDist.get() - targetDist;
+                break;
+        }
+        
+        lateralOut = chassis.lateralPID.update(error);
+        angularOut = chassis.angularPID.update(lemlib::angleError(angleToHold, chassis.getPose().theta));
+
+        angularOut = std::clamp(angularOut, -params.maxSpeed, params.maxSpeed);
+        lateralOut = std::clamp(lateralOut, -params.maxSpeed, params.maxSpeed);
+
+        float leftPower = lateralOut + angularOut;
+        float rightPower = lateralOut - angularOut;
+
+        const float ratio = std::max(std::fabs(leftPower), std::fabs(rightPower)) / params.maxSpeed;
+        if (ratio > 1) {
+            leftPower /= ratio;
+            rightPower /= ratio;
+        }
+
+        LDrive.move(leftPower);
+        RDrive.move(rightPower);
+        pros::delay(10);
+    }
+    // stop the drivetrain
+    LDrive.move(0);
+    RDrive.move(0);
+
+    chassis.endMotion();
+}
+
 void auton6(){//SKILLSSSSS
     if (team == 'r'){
         chassis.setPose(0,0,0);
@@ -425,10 +505,17 @@ void auton4(){
              
     }
 }
+//PID tuning
 void auton5(){
-    if (team == 'r'){    
-
-    } else {       
-             
+    if (team == 'r'){
+        pros::Task graphingTask(graphing);
+        chassis.setPose(0,0,0);
+        chassis.turnToHeading(180, 10000000, {}, false);
+        graphingTask.remove();
+    } else {
+        pros::Task graphingTask(graphing);
+        chassis.setPose(0,0,0);
+        chassis.moveToPoint(0, 30, 10000000, {}, false);
+        graphingTask.remove();
     }
 }

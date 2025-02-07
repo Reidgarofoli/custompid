@@ -14,6 +14,7 @@ pros::Imu inertial(20); // port 10
 pros::Optical colorSensor(13);
 pros::Distance distSensor(1);
 pros::Distance rDist(16);
+pros::Distance lDist(18);
 pros::Distance fDist(23);
 
 pros::Rotation lifterRotation(-17);
@@ -43,7 +44,7 @@ int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;
 bool doinkVal = false;
-int auton = 0;
+int auton = 5;
 int maxauto = 6;
 char team = 'r';
 bool confirm = false;
@@ -267,4 +268,19 @@ class Timer {
             do pros::delay(5);
             while (!this->isDone());
         }
+};
+struct MoveToDistanceParams {
+    /** the maximum speed the robot can travel at. Value between 0-127. 127 by default */
+    float maxSpeed = 127;
+    /** the minimum speed the robot can travel at. If set to a non-zero value, the exit conditions will switch to
+     * less accurate but smoother ones. Value between 0-127. 0 by default */
+    float minSpeed = 0;
+    /** distance between the robot and target point where the movement will exit. Only has an effect if minSpeed is
+     * non-zero.*/
+    float earlyExitRange = 0;
+
+    //f=front
+    //l=left
+    //r=right
+    char whichDist = 'f';
 };
