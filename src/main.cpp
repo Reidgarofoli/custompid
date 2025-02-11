@@ -9,7 +9,10 @@
 #include <vector>
 int startTime = 0;
 double lastColor = 0;
-lemlib::PID arm(1.5, 0.0, 0.0);
+double k = 1.5;
+double i = 0;
+double d = 1;
+lemlib::PID arm(1.5, 0, 1);
 void updateLeds(){
     if (team == 'r'){
         leds.set_all(0xff0000);
@@ -66,8 +69,8 @@ void lifting() {
         if (currentPosition < 0){
             currentPosition = 0;
         }
-        if (currentPosition > 350){
-            currentPosition = 350;
+        if (currentPosition > 267){
+            currentPosition = 267;
         }
         //lifter.move_absolute(currentPosition, 200);
         lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
@@ -138,7 +141,8 @@ void printing(){
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", chassis.getPose().y);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", chassis.getPose().theta);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "colorProx:%d", colorSensor.get_proximity());
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "colorColor:%f", colorSensor.get_hue());
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "kP:%f", arm.kP);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 200, "kD:%f", arm.kD);
 
         ///pros::lcd::print(1, "x:%f, y:%f, theta:%f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
         // pros::lcd::print(2, "color:%f  proximity:%d", colorSensor.get_hue(), colorSensor.get_proximity());
@@ -241,7 +245,7 @@ void initialize() {
     colorSensor.set_led_pwm(100);
     updateLeds();
     drawImage("brainBackground.png", 0, 0);
-    drawField();
+    // drawField();
     if (team == 'r'){pros::screen::set_pen(0xff0000);} else {pros::screen::set_pen(0x0000ff);}
     pros::screen::fill_rect(340, 55, 468, 90);
     angles.push_back(0);
@@ -395,6 +399,18 @@ void opcontrol() {
         }
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)){
             currentPosition-=10;
+        }
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
+            arm.kP = arm.kP + 0.1;
+        }
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)){
+            arm.kP = arm.kP - 0.1;
+        }
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
+            arm.kD = arm.kD + 0.1;
+        }
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)){
+            arm.kD = arm.kD - 0.1;
         }
 
         pros::delay(20);

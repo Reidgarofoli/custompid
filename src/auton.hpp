@@ -495,16 +495,88 @@ void auton2(){
 
     }   
 }
-void auton3(){
+void auton3(){ // sig solo win point
     if (team == 'r'){    
-
-    } else {       
-             
+        chassis.setPose(0, 0, 225);
+        currentPosition = midPos;
+        pros::delay(100);
+        intake.move(127);
+        chassis.moveToPoint(-2.5, -2.5, 1000, {}, false);
+        intake.move(-30);
+        currentPosition = outPos;
+        pros::delay(500);
+        chassis.moveToPoint(7, 27, 2000, {.forwards=false, .maxSpeed=60, .minSpeed=40, .earlyExitRange=2}, false);
+        currentPosition = lowPos;
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        chassis.turnToHeading(90, 1000, {.minSpeed=50, .earlyExitRange=3}, false);
+        intake.move(127);
+        chassis.moveToPoint(25, 30, 2000, {.minSpeed=50, .earlyExitRange=2}, false);
+        chassis.turnToHeading(235, 1000, {.minSpeed=50, .earlyExitRange=2}, false);
+        chassis.moveToPoint(8, 16, 3000, {.minSpeed=90, .earlyExitRange=3}, false);
+        mogoValue = false;
+        mogo.set_value(mogoValue);
+        chassis.moveToPoint(-12, 6, 3000, {.maxSpeed=60}, false);
+        chassis.moveToPoint(-22, 2, 3000, {}, false);
+        intake.move(0);
+        chassis.turnToHeading(155, 1000, {}, false);
+        chassis.moveToPoint(-40, 28, 3000, {.forwards=false, .maxSpeed=50}, false);
+        currentPosition = 160;
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        chassis.turnToHeading(270, 1000, {}, false);
+        intake.move(127);
+        chassis.moveToPoint(-57, 28, 3000, {}, false);
+        chassis.turnToHeading(90, 1000, {}, false);
+        chassis.moveToPoint(-35, 30, 3000, {}, false);
+        currentPosition = highPos;
+    } else {
+        chassis.setPose(0, 0, 225);
+        currentPosition = midPos;
+        pros::delay(100);
+        intake.move(127);
+        chassis.moveToPoint(-2.5, -2.5, 1000, {}, false);
+        intake.move(-30);
+        currentPosition = outPos;
+        pros::delay(500);
+        chassis.moveToPoint(7, 27, 2000, {.forwards=false, .maxSpeed=60, .minSpeed=40, .earlyExitRange=2}, false);
+        currentPosition = lowPos;
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        chassis.turnToHeading(90, 1000, {.minSpeed=50, .earlyExitRange=3}, false);
+        intake.move(127);
+        chassis.moveToPoint(25, 30, 2000, {.minSpeed=50, .earlyExitRange=2}, false);
+        chassis.turnToHeading(235, 1000, {.minSpeed=50, .earlyExitRange=2}, false);
+        chassis.moveToPoint(8, 16, 3000, {.minSpeed=90, .earlyExitRange=3}, false);
+        mogoValue = false;
+        mogo.set_value(mogoValue);
+        chassis.moveToPoint(-12, 6, 3000, {.maxSpeed=60}, false);
+        chassis.moveToPoint(-22, 2, 3000, {}, false);
+        intake.move(0);
+        chassis.turnToHeading(155, 1000, {}, false);
+        chassis.moveToPoint(-40, 30, 3000, {.forwards=false, .maxSpeed=50}, false);
+        currentPosition = 160;
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        chassis.turnToHeading(270, 1000, {}, false);
+        intake.move(127);
+        chassis.moveToPoint(-57, 28, 3000, {}, false);
+        pros::delay(200);
+        intake.move(0);
+        chassis.turnToHeading(90, 1000, {}, false);
+        intake.move(127);
+        chassis.moveToPoint(-35, 30, 3000, {}, false);
+        currentPosition = highPos;
     }
 }
 void auton4(){
     if (team == 'r'){    
-
+        chassis.setPose(0,0,0);
+        chassis.moveToPose(20, 20, 90, 5000, {}, false);
     } else {       
              
     }
