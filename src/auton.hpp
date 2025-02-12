@@ -93,7 +93,7 @@ void graphing(){
         pros::screen::set_pen(0x0000ff);
         pros::screen::draw_pixel(x, -currentPos.theta+240);
         pros::screen::set_pen(0xff0000);
-        pros::screen::draw_pixel(x, -currentPos.y*2+240);
+        pros::screen::draw_pixel(x, -currentPos.y*6+240);
         pros::screen::set_pen(0x00ff00);
         pros::screen::draw_pixel(x, -(LDrive.get_voltage()/1000)+120);
         x++;
@@ -573,11 +573,36 @@ void auton3(){ // sig solo win point
         currentPosition = highPos;
     }
 }
-void auton4(){
+void auton4(){// GOAL RUSH
     if (team == 'r'){    
         chassis.setPose(0,0,0);
-        chassis.moveToPose(20, 20, 90, 5000, {}, false);
-    } else {       
+        intake.move(127);
+        doinker.set_value(true);
+        chassis.moveToPoint(-11, 34, 4000, {.minSpeed=80,.earlyExitRange=1}, false);
+           intake.move(0);
+       chassis.moveToPoint(-6,21,4000,{.forwards=false},false);
+
+         doinker.set_value(false);
+         pros::delay(300);
+         chassis.swingToHeading(90,DriveSide::RIGHT,4000, {.minSpeed=80, .earlyExitRange=3}, false);
+         chassis.moveToPoint(-38,31, 4000, {.forwards=false,.maxSpeed=50,}, false);
+         mogoValue = true;
+         mogo.set_value(mogoValue);
+         pros::delay(200);
+         chassis.turnToHeading(-60,4000,{},false);
+         chassis.moveToPoint(-49,41, 4000, {}, false);
+         chassis.turnToHeading(-40,4000,{},false);
+         doinker.set_value(true);
+         pros::delay(100);
+        chassis.moveToPoint(-26,20,4000,{.forwards=false},false);
+        chassis.swingToHeading(-240,DriveSide::LEFT,1000,{.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=90, .earlyExitRange=3}, false);
+        doinker.set_value(false);
+        pros::delay(101);
+        intake.move(127);
+    
+        chassis.moveToPoint(-15,0,4000,{},false);
+
+    } else {
              
     }
 }

@@ -17,7 +17,7 @@ pros::Distance rDist(16);
 pros::Distance lDist(18);
 pros::Distance fDist(23);
 
-pros::Rotation lifterRotation(-17);
+pros::Rotation lifterRotation(-10);
 //pros::Distance front_wall_dist(3);
 
 pros::Rotation vTracking(-15);
@@ -44,7 +44,7 @@ int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;
 bool doinkVal = false;
-int auton = 3;
+int auton = 4;
 int maxauto = 6;
 char team = 'r';
 bool confirm = false;
@@ -90,9 +90,9 @@ lemlib::OdomSensors sensors {
 
 // forward/backward PID
 lemlib::ControllerSettings lateralController { 
-	11, // proportional gain (kP)
+	13, // proportional gain (kP)
 	0, // integral gain (kI)
-	60, // derivative gain (kD)
+	70, // derivative gain (kD)
 	0, // anti windup
 	1, // small error range, in inches
 	100, // small error range timeout, in milliseconds

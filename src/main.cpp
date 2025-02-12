@@ -12,7 +12,7 @@ double lastColor = 0;
 double k = 1.5;
 double i = 0;
 double d = 1;
-lemlib::PID arm(1.5, 0, 1);
+lemlib::PID arm(2, 0, 2);
 void updateLeds(){
     if (team == 'r'){
         leds.set_all(0xff0000);
@@ -141,8 +141,8 @@ void printing(){
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", chassis.getPose().y);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", chassis.getPose().theta);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "colorProx:%d", colorSensor.get_proximity());
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "kP:%f", arm.kP);
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 200, "kD:%f", arm.kD);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "kP:%f", chassis.lateralPID.kP);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 200, "kD:%f", chassis.lateralPID.kD);
 
         ///pros::lcd::print(1, "x:%f, y:%f, theta:%f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
         // pros::lcd::print(2, "color:%f  proximity:%d", colorSensor.get_hue(), colorSensor.get_proximity());
@@ -400,18 +400,33 @@ void opcontrol() {
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)){
             currentPosition-=10;
         }
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
-            arm.kP = arm.kP + 0.1;
-        }
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)){
-            arm.kP = arm.kP - 0.1;
-        }
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
-            arm.kD = arm.kD + 0.1;
-        }
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)){
-            arm.kD = arm.kD - 0.1;
-        }
+
+
+        // TUNING PID
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
+        //     chassis.lateralPID.kP = chassis.lateralPID.kP + 0.1;
+        // }
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)){
+        //     chassis.lateralPID.kP = chassis.lateralPID.kP - 0.1;
+        // }
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
+        //     chassis.lateralPID.kD = chassis.lateralPID.kD + 0.1;
+        // }
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)){
+        //     chassis.lateralPID.kD = chassis.lateralPID.kD - 0.1;
+        // }
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)){
+        //     chassis.lateralPID.kP = chassis.lateralPID.kP + 5;
+        // }
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)){
+        //     chassis.lateralPID.kP = chassis.lateralPID.kP - 5;
+        // }
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)){
+        //     chassis.lateralPID.kD = chassis.lateralPID.kD + 5;
+        // }
+        // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)){
+        //     chassis.lateralPID.kD = chassis.lateralPID.kD - 5;
+        // }
 
         pros::delay(20);
     }
