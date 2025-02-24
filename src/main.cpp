@@ -12,7 +12,7 @@ double lastColor = 0;
 double k = 1.5;
 double i = 0;
 double d = 1;
-lemlib::PID arm(2, 0, 2);
+lemlib::PID arm(2.1, 0, 0);
 void updateLeds(){
     if (team == 'r'){
         leds.set_all(0xff0000);
@@ -62,6 +62,7 @@ void drawField(){
     }
 }
 void lifting() {
+    bool ejected = false;
     while (true){
         /*
         ladyBrown code
@@ -79,6 +80,7 @@ void lifting() {
         */
         //hue of 0 is red 240 is blue
         if (colorSort && distSensor.get_distance() < 70){
+            ejected = false;
             int startpose = intake.get_position();
             int EjectingColor = colorSensor.get_hue();
             if (team == 'r'){ //if we are on red team, and sees a ring at the top of the intake
@@ -87,12 +89,14 @@ void lifting() {
                         while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
                         pros::delay(50);
+                        ejected = true;
                     }
                 } else { // if color is between 240, 360
                     if (EjectingColor < 300){ // if the color is closer to blue
                         while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
                         pros::delay(50);
+                        ejected = true;
                     }
                 }
             } else if (team == 'b'){ //if we are on red team, and sees a ring at the top of the intake
@@ -101,17 +105,37 @@ void lifting() {
                         while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
                         pros::delay(50);
+                        ejected = true;
                     }
                 } else { // if color is between 240, 360
                     if (EjectingColor > 300){ // if the color is closer to blue
                         while (234 + startpose > intake.get_position()){intake.move(127); pros::delay(20);}
                         intake.move(-127);
                         pros::delay(50);
+                        ejected = true;
                     }
                 }
             }
+            if (ejected == false){
+                intake.move(127);
+            }
         } else if (colorSort){
             intake.move(127);
+        }
+        
+        if (ringsTillIntake > 0 && distSensor.get_distance() > 70){
+            intake.move(100);
+            intakeRingToIntake = true;
+        } else if (intakeRingToIntake && distSensor.get_distance() < 70 && ringsTillIntake > 0){
+            intakeRingToIntake = false;
+            ringsTillIntake--;
+            if (ringsTillIntake == 0){
+                intake.move(0);
+                intake.move_relative(-50, 100);
+            }
+        }
+        if (!intakeRingToIntake && distSensor.get_distance() > 70 && ringsTillIntake > 0) {
+            intakeRingToIntake = true;
         }
 
         // anti jam
@@ -141,7 +165,7 @@ void printing(){
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 120, "y:%f", chassis.getPose().y);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 140, "theta:%f", chassis.getPose().theta);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 160, "colorProx:%d", colorSensor.get_proximity());
-        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "kP:%f", chassis.lateralPID.kP);
+        pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 180, "kP:%d", ringsTillIntake);
         pros::c::screen_print_at(pros::E_TEXT_SMALL, 350, 200, "kD:%f", chassis.lateralPID.kD);
 
         ///pros::lcd::print(1, "x:%f, y:%f, theta:%f", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
@@ -339,10 +363,14 @@ void opcontrol() {
         if (auton == 5){
             cycle();
         }
+
+
         int dir = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int turn = -master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-        LDrive.move(dir - turn);
-        RDrive.move(dir + turn);
+        int turn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        LDrive.move(dir + turn);
+        RDrive.move(dir - turn);
+
+        
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
             switch (currentPosition){
                 case lowPos:

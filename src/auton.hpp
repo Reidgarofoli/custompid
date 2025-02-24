@@ -517,9 +517,11 @@ void auton3(){ // sig solo win point
         chassis.moveToPoint(8, 16, 3000, {.minSpeed=90, .earlyExitRange=3}, false);
         mogoValue = false;
         mogo.set_value(mogoValue);
+        intake.move(0);
+        ringsTillIntake = 2;
+        intakeRingToIntake = true;
         chassis.moveToPoint(-12, 6, 3000, {.maxSpeed=60}, false);
         chassis.moveToPoint(-22, 2, 3000, {}, false);
-        intake.move(0);
         chassis.turnToHeading(155, 1000, {}, false);
         chassis.moveToPoint(-40, 28, 3000, {.forwards=false, .maxSpeed=50}, false);
         currentPosition = 160;
@@ -531,7 +533,7 @@ void auton3(){ // sig solo win point
         chassis.moveToPoint(-57, 28, 3000, {}, false);
         chassis.turnToHeading(90, 1000, {}, false);
         chassis.moveToPoint(-35, 30, 3000, {}, false);
-        currentPosition = highPos;
+        currentPosition = highPos + 10;
     } else {
         chassis.setPose(0, 0, 225);
         currentPosition = midPos;
@@ -553,11 +555,13 @@ void auton3(){ // sig solo win point
         chassis.moveToPoint(8, 16, 3000, {.minSpeed=90, .earlyExitRange=3}, false);
         mogoValue = false;
         mogo.set_value(mogoValue);
+        intake.move(0);
+        ringsTillIntake = 2;
+        intakeRingToIntake = true;
         chassis.moveToPoint(-12, 6, 3000, {.maxSpeed=60}, false);
         chassis.moveToPoint(-22, 2, 3000, {}, false);
-        intake.move(0);
         chassis.turnToHeading(155, 1000, {}, false);
-        chassis.moveToPoint(-40, 30, 3000, {.forwards=false, .maxSpeed=50}, false);
+        chassis.moveToPoint(-40, 28, 3000, {.forwards=false, .maxSpeed=50}, false);
         currentPosition = 160;
         mogoValue = true;
         mogo.set_value(mogoValue);
@@ -565,58 +569,119 @@ void auton3(){ // sig solo win point
         chassis.turnToHeading(270, 1000, {}, false);
         intake.move(127);
         chassis.moveToPoint(-57, 28, 3000, {}, false);
-        pros::delay(200);
-        intake.move(0);
         chassis.turnToHeading(90, 1000, {}, false);
-        intake.move(127);
         chassis.moveToPoint(-35, 30, 3000, {}, false);
-        currentPosition = highPos;
+        currentPosition = highPos + 10;
     }
 }
 void auton4(){// GOAL RUSH
     if (team == 'r'){    
         chassis.setPose(0,0,0);
-        intake.move(127);
+        ringsTillIntake = 1;
         doinker.set_value(true);
-        chassis.moveToPoint(-11, 34, 4000, {.minSpeed=80,.earlyExitRange=1}, false);
-           intake.move(0);
-       chassis.moveToPoint(-6,21,4000,{.forwards=false},false);
-
-         doinker.set_value(false);
-         pros::delay(300);
-         chassis.swingToHeading(90,DriveSide::RIGHT,4000, {.minSpeed=80, .earlyExitRange=3}, false);
-         chassis.moveToPoint(-38,31, 4000, {.forwards=false,.maxSpeed=50,}, false);
-         mogoValue = true;
-         mogo.set_value(mogoValue);
-         pros::delay(200);
-         chassis.turnToHeading(-60,4000,{},false);
-         chassis.moveToPoint(-49,41, 4000, {}, false);
-         chassis.turnToHeading(-40,4000,{},false);
-         doinker.set_value(true);
-         pros::delay(100);
-        chassis.moveToPoint(-26,20,4000,{.forwards=false},false);
-        chassis.swingToHeading(-240,DriveSide::LEFT,1000,{.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=90, .earlyExitRange=3}, false);
+        chassis.moveToPoint(-9.5, 32, 2000, {.minSpeed=80, .earlyExitRange=1}, true);
+        chassis.waitUntil(30);
         doinker.set_value(false);
-        pros::delay(101);
-        intake.move(127);
+        chassis.waitUntilDone();
+        chassis.moveToPoint(-6,15,2000,{.forwards=false}, true);
+        pros::delay(200);
+        doinker.set_value(true);
+        chassis.waitUntilDone();
+        doinker.set_value(false);
+        pros::delay(200);
+
+        // doinker.set_value(false);
+        // pros::delay(300);
+        // chassis.swingToHeading(90,DriveSide::RIGHT,2000, {.minSpeed=80, .earlyExitRange=3}, false);
+        // chassis.moveToPoint(-32,31, 2000, {.forwards=false,.minSpeed=50,.earlyExitRange=1}, false);
+        // mogoValue = true;
+        // mogo.set_value(mogoValue);
+        // pros::delay(200);
+        // intake.move(127);
+        // chassis.turnToHeading(-60,1000,{},false);
+        // intake.move(0);
+        // chassis.moveToPoint(-47.5,42.5, 2000, {.maxSpeed=60}, false);
+        // chassis.turnToHeading(-48,1000,{},false);
+        // doinker.set_value(true);
+        // pros::delay(200);
+        // chassis.swingToHeading(-15, DriveSide::RIGHT, 1000, {}, false);
+        // ldoink.set_value(true);
+        // pros::delay(200);
+        // chassis.moveToPoint(-30, 8, 3000, {.forwards=false}, false);
+        // doinker.set_value(false);
+        // ldoink.set_value(false);
+        // pros::delay(400);
+        // colorSort=true;
+        // chassis.turnToHeading(30, 1000, {}, false);
+        // chassis.swingToHeading(135, DriveSide::LEFT, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=127, .earlyExitRange=3}, false);
+        // chassis.moveToPose(0, -5, 90, 1000, {.minSpeed=80}, false);
+
+        // // chassis.moveToPoint(-26,20,2000,{.forwards=false},false);
+        // // intake.move(127);
+        // // chassis.moveToPoint(-26, 30, 2000, {.minSpeed=80, .earlyExitRange=3}, false);
+        // // chassis.moveToPoint(-26, 20, 2000, {.forwards=false, .minSpeed=80, .earlyExitRange=3}, false);
+        // // doinker.set_value(false);
+        // // chassis.swingToHeading(-240,DriveSide::LEFT,1000,{.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=90, .earlyExitRange=3}, false);
+        // // pros::delay(100);
+        // // colorSort = true;
     
-        chassis.moveToPoint(-15,0,4000,{},false);
+        // // chassis.moveToPoint(-20,0,2000,{},false);
 
     } else {
              
     }
 }
-//PID tuning
+
 void auton5(){
     if (team == 'r'){
-        pros::Task graphingTask(graphing);
         chassis.setPose(0,0,0);
-        chassis.turnToHeading(180, 10000000, {}, false);
-        graphingTask.remove();
+        ringsTillIntake = 1;
+        doinker.set_value(true);
+        chassis.moveToPoint(-11, 34, 2000, {.minSpeed=80,.earlyExitRange=1}, false);
+        intake.move(0);
+        chassis.moveToPoint(-6,21,2000,{.forwards=false},false);
+
+        doinker.set_value(false);
+        pros::delay(300);
+        chassis.swingToHeading(90,DriveSide::RIGHT,2000, {.minSpeed=80, .earlyExitRange=3}, false);
+        chassis.moveToPoint(-38,31, 2000, {.forwards=false,.maxSpeed=50,}, false);
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        intake.move(127);
+        chassis.turnToHeading(-60,1000,{},false);
+        intake.move(0);
+        chassis.moveToPoint(-47.5,42.5, 2000, {.maxSpeed=60}, false);
+        chassis.turnToHeading(-48,1000,{},false);
+        doinker.set_value(true);
+        pros::delay(200);
+        chassis.swingToHeading(-15, DriveSide::RIGHT, 1000, {}, false);
+        ldoink.set_value(true);
+        pros::delay(200);
+        chassis.moveToPoint(-30, 8, 3000, {.forwards=false}, false);
+        doinker.set_value(false);
+        ldoink.set_value(false);
+        pros::delay(400);
+        colorSort=true;
+        chassis.turnToHeading(30, 1000, {}, false);
+        chassis.swingToHeading(135, DriveSide::LEFT, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=127, .earlyExitRange=3}, false);
+        chassis.moveToPoint(0, -3, 1000, {.minSpeed=80}, false);
     } else {
-        pros::Task graphingTask(graphing);
-        chassis.setPose(0,0,0);
-        chassis.moveToPoint(0, 30, 10000000, {}, false);
-        graphingTask.remove();
+
     }
 }
+
+//PID tuning
+// void auton5(){
+//     if (team == 'r'){
+//         pros::Task graphingTask(graphing);
+//         chassis.setPose(0,0,0);
+//         chassis.turnToHeading(180, 10000000, {}, false);
+//         graphingTask.remove();
+//     } else {
+//         pros::Task graphingTask(graphing);
+//         chassis.setPose(0,0,0);
+//         chassis.moveToPoint(0, 30, 10000000, {}, false);
+//         graphingTask.remove();
+//     }
+// }

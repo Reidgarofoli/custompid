@@ -7,10 +7,36 @@ double radToDeg(double a){
 double degToRad(double a){
     return a * M_PI / 180;
 }
+class DualIMU : public pros::Imu {
+    public:
+        DualIMU(pros::Imu& imu1, pros::Imu& imu2) : pros::Imu(imu1.get_port()), imu1(imu1), imu2(imu2) {}
+        void reset() {
+            imu1.reset();
+            imu2.reset();
+        }
+        double get_rotation() const {
+            return fmod((imu1.get_rotation() - imu2.get_rotation()) / 2.0, 360.0);
+        }
+        double get_heading() const {
+            double difference = imu1.get_heading() - imu2.get_heading();
+            if (difference > 180){
+                imu2.set_heading(imu2.get_heading() + 360);
+            } else if (difference < -180){
+                imu1.set_heading(imu1.get_heading() + 360);
+            }
+            return fmod((imu1.get_heading()+imu2.get_heading())/2.0, 360);
+        }
+    private:
+        pros::Imu& imu1;
+        pros::Imu& imu2;
+};
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller info(pros::E_CONTROLLER_PARTNER);
-pros::Imu inertial(5); // port 10
+// pros::Imu a(5);
+// pros::Imu b(23);
+// DualIMU inertial(a, b); // port 10
+pros::Imu inertial(5);
 pros::Optical colorSensor(13);
 pros::Distance distSensor(1);
 pros::Distance rDist(16);
@@ -20,9 +46,8 @@ pros::Distance fDist(23);
 pros::Rotation lifterRotation(-10);
 //pros::Distance front_wall_dist(3);
 
-pros::Rotation vTracking(-15);
+pros::Rotation vTracking(-17);
 pros::Rotation hTracking(3);
-
 pros::MotorGroup LDrive({-4, -6, 7}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::rotations);
 pros::MotorGroup RDrive({2, -8, 11}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::rotations);
 
@@ -31,7 +56,7 @@ pros::Motor intake(14, pros::MotorGearset::blue, pros::MotorUnits::degrees);
 
 pros::adi::DigitalOut mogo(8); // hi this is good for you ;) 
 pros::adi::DigitalOut doinker(1);
-pros::adi::DigitalOut yoinker(2);
+pros::adi::DigitalOut ldoink(3);
 
 pros::adi::Led leds(4, 31);
 
@@ -51,13 +76,15 @@ bool confirm = false;
 int page = 0;
 int pagenums = 2;
 int ejectDelay = 90;
+bool intakeRingToIntake = false;
+int ringsTillIntake = 0;
 
 std::string space = "                                ";
 
 lemlib::Drivetrain drivetrain {
 	&LDrive, // left motor group
 	&RDrive, // right motor group
-	12.5, // 14.5 inch track width
+	12.5, // 12.5 inch track width
 	lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
 	450, // drivetrain rpm is 450
 	8 // Its 8 because we have traction wheels
