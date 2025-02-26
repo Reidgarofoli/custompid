@@ -287,7 +287,7 @@ void auton6(){//SKILLSSSSS
         chassis.setPose(0,0,0);
     }
 }
-void auton0(){ // solo win point
+void auton0(){ // solo win point not sig
     if (team == 'r'){
         chassis.setPose(0,0,270);
         currentPosition = midPos;
@@ -348,7 +348,7 @@ void auton0(){ // solo win point
         currentPosition = highPos;  
     }
 }
-void auton1(){ //goal rush
+void auton1(){ //goal rush OLD
 
     if (team == 'r'){  //red side goal rush  
         chassis.setPose(0,0,0);
@@ -441,7 +441,7 @@ void auton1(){ //goal rush
     }
 }
 
-void auton2(){
+void auton2(){ //JOHN BAPST GOAL RUSH
     if (team == 'r'){
         chassis.setPose(0,0,0);
         doinker.set_value(true);
@@ -496,7 +496,7 @@ void auton2(){
     }   
 }
 void auton3(){ // sig solo win point
-    if (team == 'r'){    
+    if (team == 'r'){
         chassis.setPose(0, 0, 225);
         currentPosition = midPos;
         pros::delay(100);
@@ -574,7 +574,7 @@ void auton3(){ // sig solo win point
         currentPosition = highPos + 10;
     }
 }
-void auton4(){// GOAL RUSH
+void auton4(){// GOAL RUSH STATES ELIMINATION
     if (team == 'r'){
         int startTime = pros::millis();
         chassis.setPose(0,0,0);
@@ -605,7 +605,7 @@ void auton4(){// GOAL RUSH
         chassis.turnToHeading(-48,1000,{},false);
         intake.move(0);
         chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=50}, false);
-        chassis.swingToHeading(-53, DriveSide::RIGHT,1000,{},true);
+        chassis.swingToHeading(-57, DriveSide::RIGHT,1000,{},true);//it was -53
         doinker.set_value(true);
         chassis.waitUntilDone();
         chassis.moveToPoint(-38, 15, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=2}, false);
@@ -627,11 +627,28 @@ void auton4(){// GOAL RUSH
         mogoValue = false;
         mogo.set_value(mogoValue);
     } else {
+        int startTime = pros::millis();
+        chassis.setPose(0,0,0);
+        ringsTillIntake = 1;
+        doinker.set_value(true);
+        chassis.moveToPoint(-9, 32, 2000, {.minSpeed=80, .earlyExitRange=1}, true);
+        bool running = true;
+        while (chassis.isInMotion() && running){
+            if (chassis.getPose().y > 30){
+                doinker.set_value(false);
+                running = false;
+            }
+        }
+        chassis.waitUntilDone();
+        doinker.set_value(false);
+        chassis.moveToPoint(-6,20,2000,{.forwards=false}, false);
+        doinker.set_value(true);
+        pros::delay(200);
         
     }
 }
 
-void auton5(){
+void auton5(){ // PID TUNING
     if (team == 'r'){
         chassis.setPose(0,0,0);
         ringsTillIntake = 1;
