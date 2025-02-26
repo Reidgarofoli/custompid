@@ -575,60 +575,58 @@ void auton3(){ // sig solo win point
     }
 }
 void auton4(){// GOAL RUSH
-    if (team == 'r'){    
+    if (team == 'r'){
+        int startTime = pros::millis();
         chassis.setPose(0,0,0);
         ringsTillIntake = 1;
         doinker.set_value(true);
-        chassis.moveToPoint(-9.5, 32, 2000, {.minSpeed=80, .earlyExitRange=1}, true);
-        chassis.waitUntil(30);
-        doinker.set_value(false);
+        chassis.moveToPoint(-9, 32, 2000, {.minSpeed=80, .earlyExitRange=1}, true);
+        bool running = true;
+        while (chassis.isInMotion() && running){
+            if (chassis.getPose().y > 30){
+                doinker.set_value(false);
+                running = false;
+            }
+        }
         chassis.waitUntilDone();
-        chassis.moveToPoint(-6,15,2000,{.forwards=false}, true);
+        doinker.set_value(false);
+        chassis.moveToPoint(-6,20,2000,{.forwards=false}, false);
+        doinker.set_value(true);
         pros::delay(200);
+        chassis.moveToPoint(-6,15,2000,{.forwards=false, .minSpeed=60, .earlyExitRange=1}, false);
+        doinker.set_value(false);
+        chassis.turnToHeading(135, 1000, {.minSpeed=80, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-30,28, 2000, {.forwards=false, .minSpeed=50, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-40,30, 2000, {.forwards=false, .maxSpeed=50}, false);
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        intake.move(127);
+        chassis.turnToHeading(-48,1000,{},false);
+        intake.move(0);
+        chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=50}, false);
+        chassis.swingToHeading(-52.5, DriveSide::RIGHT,1000,{},true);
         doinker.set_value(true);
         chassis.waitUntilDone();
+        chassis.moveToPoint(-38, 15, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=2}, false);
+        chassis.turnToHeading(135, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=80, .earlyExitRange=4}, false);
         doinker.set_value(false);
-        pros::delay(200);
-
-        // doinker.set_value(false);
-        // pros::delay(300);
-        // chassis.swingToHeading(90,DriveSide::RIGHT,2000, {.minSpeed=80, .earlyExitRange=3}, false);
-        // chassis.moveToPoint(-32,31, 2000, {.forwards=false,.minSpeed=50,.earlyExitRange=1}, false);
-        // mogoValue = true;
-        // mogo.set_value(mogoValue);
-        // pros::delay(200);
-        // intake.move(127);
-        // chassis.turnToHeading(-60,1000,{},false);
-        // intake.move(0);
-        // chassis.moveToPoint(-47.5,42.5, 2000, {.maxSpeed=60}, false);
-        // chassis.turnToHeading(-48,1000,{},false);
-        // doinker.set_value(true);
-        // pros::delay(200);
-        // chassis.swingToHeading(-15, DriveSide::RIGHT, 1000, {}, false);
-        // ldoink.set_value(true);
-        // pros::delay(200);
-        // chassis.moveToPoint(-30, 8, 3000, {.forwards=false}, false);
-        // doinker.set_value(false);
-        // ldoink.set_value(false);
-        // pros::delay(400);
-        // colorSort=true;
-        // chassis.turnToHeading(30, 1000, {}, false);
-        // chassis.swingToHeading(135, DriveSide::LEFT, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=127, .earlyExitRange=3}, false);
-        // chassis.moveToPose(0, -5, 90, 1000, {.minSpeed=80}, false);
-
-        // // chassis.moveToPoint(-26,20,2000,{.forwards=false},false);
-        // // intake.move(127);
-        // // chassis.moveToPoint(-26, 30, 2000, {.minSpeed=80, .earlyExitRange=3}, false);
-        // // chassis.moveToPoint(-26, 20, 2000, {.forwards=false, .minSpeed=80, .earlyExitRange=3}, false);
-        // // doinker.set_value(false);
-        // // chassis.swingToHeading(-240,DriveSide::LEFT,1000,{.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=90, .earlyExitRange=3}, false);
-        // // pros::delay(100);
-        // // colorSort = true;
-    
-        // // chassis.moveToPoint(-20,0,2000,{},false);
-
+        pros::delay(400);
+        colorSort = true;
+        chassis.moveToPose(-10, -4, 90, 2000, {.lead=0.4}, true);
+        pros::delay(400);
+        doinker.set_value(true);
+        chassis.waitUntilDone();
+        chassis.turnToHeading(60, 1000, {.minSpeed=127, .earlyExitRange=10});
+        doinker.set_value(false);
+        colorSort = true;
+        chassis.moveToPose(0, 15, 0, 4000, {.maxSpeed=60}, true);
+        while (pros::millis() - startTime < 14.9) {
+            mogoValue = false;
+            mogo.set_value(mogoValue);
+        }
     } else {
-             
+        
     }
 }
 
