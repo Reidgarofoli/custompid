@@ -605,7 +605,7 @@ void auton4(){// GOAL RUSH
         chassis.turnToHeading(-48,1000,{},false);
         intake.move(0);
         chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=50}, false);
-        chassis.swingToHeading(-52.5, DriveSide::RIGHT,1000,{},true);
+        chassis.swingToHeading(-53, DriveSide::RIGHT,1000,{},true);
         doinker.set_value(true);
         chassis.waitUntilDone();
         chassis.moveToPoint(-38, 15, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=2}, false);
@@ -613,18 +613,19 @@ void auton4(){// GOAL RUSH
         doinker.set_value(false);
         pros::delay(400);
         colorSort = true;
-        chassis.moveToPose(-10, -4, 90, 2000, {.lead=0.4}, true);
-        pros::delay(400);
+        chassis.moveToPose(-10, -4, 100, 2000, {}, true);
+        pros::delay(200);
         doinker.set_value(true);
         chassis.waitUntilDone();
-        chassis.turnToHeading(60, 1000, {.minSpeed=127, .earlyExitRange=10});
+        chassis.turnToHeading(50, 1000, {.minSpeed=127, .earlyExitRange=10});
         doinker.set_value(false);
         colorSort = true;
-        chassis.moveToPose(0, 15, 0, 4000, {.maxSpeed=60}, true);
-        while (pros::millis() - startTime < 14.9) {
-            mogoValue = false;
-            mogo.set_value(mogoValue);
+        chassis.moveToPose(0, 25, 0, 4000, {.maxSpeed=60}, true);
+        while ((pros::millis() - startTime)/1000 < 14.9) {
+
         }
+        mogoValue = false;
+        mogo.set_value(mogoValue);
     } else {
         
     }
