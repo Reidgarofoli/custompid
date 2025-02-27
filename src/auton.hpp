@@ -569,20 +569,22 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
         intake.move(127);
         chassis.turnToHeading(-48,1000,{},false);
         intake.move(0);
-        chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=50}, false);
-        chassis.swingToHeading(-57, DriveSide::RIGHT,1000,{},true);//it was -53
+        chassis.moveToPose(-49.5, 41.5, -55, 2000, {.maxSpeed=50}, true);
+        // chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=40}, false);
+        // chassis.swingToHeading(-56, DriveSide::RIGHT,1000,{},true);//it was -53
+        pros::delay(800);
         doinker.set_value(true);
         chassis.waitUntilDone();
-        chassis.moveToPoint(-38, 15, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=2}, false);
-        chassis.turnToHeading(135, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=80, .earlyExitRange=4}, false);
+        chassis.moveToPoint(-38, 9, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=1}, false);
+        chassis.turnToHeading(105, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=80, .earlyExitRange=4}, false);
         doinker.set_value(false);
         pros::delay(400);
         colorSort = true;
-        chassis.moveToPose(-10, -4, 100, 2000, {}, true);
+        chassis.moveToPose(-10, 0, 100, 2000, {}, true);
         pros::delay(200);
         doinker.set_value(true);
         chassis.waitUntilDone();
-        chassis.turnToHeading(50, 1000, {.minSpeed=127, .earlyExitRange=10});
+        chassis.turnToHeading(60, 1000, {.minSpeed=127, .earlyExitRange=10});
         doinker.set_value(false);
         colorSort = true;
         chassis.moveToPose(0, 25, 0, 4000, {.maxSpeed=60}, true);

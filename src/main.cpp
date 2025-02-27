@@ -67,14 +67,23 @@ void lifting() {
         /*
         ladyBrown code
         */
-        if (currentPosition < 0){
-            currentPosition = 0;
+        if (dunking){
+            currentPosition = highPos;
+            if ((float)lifterRotation.get_position()/100 > 135){
+                dunking = false;
+                currentPosition = midPos;
+            }
+            lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
+        } else {
+            if (currentPosition < 0){
+                currentPosition = 0;
+            }
+            if (currentPosition > 267){
+                currentPosition = 267;
+            }
+            //lifter.move_absolute(currentPosition, 200);
+            lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
         }
-        if (currentPosition > 267){
-            currentPosition = 267;
-        }
-        //lifter.move_absolute(currentPosition, 200);
-        lifter.move(arm.update(currentPosition - ((float)lifterRotation.get_position()/100)));
         /*
         Color sort
         */
@@ -427,6 +436,14 @@ void opcontrol() {
         }
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)){
             currentPosition-=10;
+        }
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)){
+            if (currentPosition==midPos*2){
+                dunking=true;
+            } else {
+                currentPosition=midPos*2;
+
+            }
         }
 
 

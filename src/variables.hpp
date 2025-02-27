@@ -60,16 +60,17 @@ pros::adi::DigitalOut ldoink(3);
 
 pros::adi::Led leds(4, 31);
 
+bool dunking = false;
 const int lowPos  = 0;
 bool autonHappened;
-const int midPos  = 30;
+const int midPos  = 33;
 const int highPos = 142;
 const int outPos = 200;
 int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;
 bool doinkVal = false;
-int auton = 6;
+int auton = 4;
 int maxauto = 6;
 char team = 'r';
 bool confirm = false;
