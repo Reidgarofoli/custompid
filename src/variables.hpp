@@ -40,7 +40,7 @@ pros::Imu inertial(5);
 pros::Optical colorSensor(13);
 pros::Distance distSensor(1);
 pros::Distance rDist(16);
-pros::Distance lDist(18);
+pros::Distance lDist(12);
 pros::Distance fDist(23);
 
 pros::Rotation lifterRotation(-10);
@@ -69,7 +69,7 @@ int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;
 bool doinkVal = false;
-int auton = 4;
+int auton = 6;
 int maxauto = 6;
 char team = 'r';
 bool confirm = false;

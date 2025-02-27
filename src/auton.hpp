@@ -190,10 +190,10 @@ void auton6(){//SKILLSSSSS
         chassis.turnToHeading(135, 1000, {}, false);
         currentPosition = midPos;
         intake.move(127);
-        chassis.moveToPoint(45, -48, 2000, {.minSpeed=45, .earlyExitRange=2}, false);
+        chassis.moveToPoint(40, -45, 2000, {.minSpeed=45, .earlyExitRange=2}, false);
         chassis.swingToHeading(90, DriveSide::LEFT, 1000, {}, false);
-        chassis.moveToPoint(60, -50, 2000, {}, false);
-        pros::delay(200);
+        chassis.moveToPoint(60, chassis.getPose().y, 2000, {}, false);
+        pros::delay(500);
         currentPosition = highPos;
         intake.move(-30);
         pros::delay(500);
@@ -206,83 +206,48 @@ void auton6(){//SKILLSSSSS
         chassis.moveToPoint(47, -7, 1000, {.maxSpeed=60}, false);
         chassis.moveToPoint(46, 8, 1000, {.maxSpeed=60}, false);
         pros::delay(200);
-        chassis.moveToPoint(50, -5, 1000, {.maxSpeed=60}, false);
-        chassis.turnToHeading(-128, 1000, {}, false);
-        chassis.moveToPoint(59, 11, 1000, {.forwards=false, .maxSpeed=60}, false);
+        chassis.turnToHeading(0, 1000, {}, false);
+        chassis.setPose(-lDist.get_distance()/25.4, chassis.getPose().y, chassis.getPose().theta);
+        chassis.moveToPoint(-20, -4,3000, {.forwards=false}, false);
+        chassis.turnToHeading(225, 1000, {}, false);
+        chassis.moveToPoint(-4,10,4000,{.forwards=false}, false);
         mogoValue = false;
         mogo.set_value(mogoValue);
         pros::delay(200);
-
-        //first part bottom right mogo 
-        intake.move(0);
-        chassis.moveToPoint(42, -1, 1000, {}, false);
-        chassis.turnToHeading(90, 1000, {}, false);
-        currentPosition = lowPos;
-        chassis.moveToPoint(-26, -5, 4000, {.forwards=false, .maxSpeed=60, .minSpeed=30, .earlyExitRange=2}, false);
+        chassis.moveToPoint(-34,0,4000,{},false);
+        chassis.turnToHeading(-90,1000,{},false);
+        chassis.setPose(chassis.getPose().x, -lDist.get_distance()/25.4, chassis.getPose().theta);
+        currentPosition=lowPos;
+        chassis.turnToHeading(90,1000,{},false);
+        chassis.moveToPoint(-88,-17,4000,{.forwards=false,.maxSpeed=50},false);
         mogoValue = true;
         mogo.set_value(mogoValue);
-        chassis.turnToHeading(-200, 1000, {}, false);
-        intake.move(127);
-        chassis.moveToPoint(-24, -25, 4000, {.maxSpeed=60}, false);
-
-        //second high stake
-        chassis.turnToHeading(-126, 1000, {}, false);
-        currentPosition = midPos;
-        chassis.moveToPoint(-50, -49, 4000, {}, false);
-        chassis.swingToHeading(-90, DriveSide::RIGHT,2000, {}, false);
-        chassis.moveToPoint(-59, -51, 4000, {}, false);
         pros::delay(200);
+        chassis.turnToHeading(180,1000,{},false);
+        intake.move(127);
+        chassis.moveToPoint(-89, -36, 4000, {}, false);
+        chassis.turnToHeading(-145, 1000, {}, false);
+        chassis.moveToPoint(-105,-60, 4000, {}, false);
+        chassis.swingToHeading(270, DriveSide::RIGHT, 1000, {}, false);
+        currentPosition = midPos;
+        chassis.moveToPoint(-124,chassis.getPose().y, 4000, {}, false);
+        pros::delay(500);
         currentPosition = highPos;
         intake.move(-30);
         pros::delay(500);
-        
-        chassis.moveToPoint(-40, -50, 4000, {.forwards=false}, false);
-        chassis.turnToHeading(0,200,{},false);
-        intake.move(127);
-        chassis.moveToPoint(-46,-18,4000,{.maxSpeed=50},false);
-        pros::delay(100);
-        chassis.moveToPoint(-49,6,4000,{.maxSpeed=50},false);
-
-        chassis.turnToHeading(118,2000,{},false);
-        chassis.moveToPoint(-57,11,4000,{.forwards=false},false);
-        intake.move(0);
-        mogoValue = false;
-        mogo.set_value(mogoValue);  //
-        pros::delay(200);
-
-        ///////////// everything above kinda works depending on startin position
-
-        chassis.moveToPoint(-47,7,4000,{},false);
-        chassis.turnToHeading(0,4000,{},false);
-        chassis.moveToPoint(-37,-67,5000,{.forwards=false},false);
-        currentPosition=lowPos;
-        chassis.moveToPoint(-20,-112,5000,{.forwards=false,.maxSpeed=40},false);
-        mogoValue=true;
-        mogo.set_value(mogoValue);
-        chassis.swingToHeading(50,DriveSide::RIGHT,2000,{}, false);
-        chassis.moveToPoint(-56,-112,5000,{.forwards=false},false); 
-        mogoValue=false;
-        mogo.set_value(mogoValue);
-        chassis.moveToPoint(-9,-105,5000,{},false); 
+        chassis.moveToPoint(-110, chassis.getPose().y+1, 2000, {.forwards=false}, false);
         chassis.turnToHeading(0, 1000, {}, false);
-        chassis.moveToPoint(50,-112,5000,{},false); 
-        chassis.turnToHeading(90, 1000, {}, false);
-
-        
-        // chassis.moveToPoint(50,-105,4000,{},false);
-        // chassis.moveToPoint(0,-103,4000,{.forwards=false, .maxSpeed=50, .minSpeed=30, .earlyExitRange=1},false);
-        // mogoValue=true;
-        // mogo.set_value(mogoValue);
-        // intake.move(127);
-        // chassis.moveToPoint(21,-67,4000,{},false);
-        // chassis.moveToPoint(41,-64,5000,{},false);
-        // currentPosition=midPos;
-        // chassis.moveToPoint(12, -100, 4000, {}, false);
-        // chassis.turnToHeading(215, 1000, {}, false);
-        // chassis.moveToPoint(8, -105, 4000, {}, false);
-        // chassis.turnToHeading(215, 1000, {}, false);
-        // intake.move(-30);
-        // currentPosition = outPos;
+        intake.move(127);
+        chassis.moveToPoint(-115,-19, 7000, {}, false);
+        chassis.moveToPoint(-115,-3, 1000, {}, false);
+        chassis.moveToPoint(-115,-18,3000,{.forwards=false}, false);
+        chassis.swingToHeading(110,DriveSide::RIGHT, 2000, {},false);
+        chassis.moveToPoint(-127,-4,3000,{.forwards=false}, false);
+        mogoValue = false;
+        mogo.set_value(mogoValue);
+        pros::delay(200);//2nd goal in corner  
+        intake.move(0);
+        chassis.moveToPoint(-110,-10,2000,{},false);
     } else {
         chassis.setPose(0,0,0);
     }
@@ -644,7 +609,9 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
         chassis.moveToPoint(-6,20,2000,{.forwards=false}, false);
         doinker.set_value(true);
         pros::delay(200);
-        
+        chassis.moveToPoint(-6,15,2000,{.forwards=false, .minSpeed=60, .earlyExitRange=1}, false);
+        doinker.set_value(false);
+        chassis.turnToHeading(225, 1500, {}, false);
     }
 }
 
