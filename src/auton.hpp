@@ -296,8 +296,8 @@ void auton6(){//SKILLSSSSS
         chassis.turnToHeading(-496,1000,{},false);
         
         driveInches(-24, 2000, {.maxSpeed = 76.2}, false);
-        driveInches(4, 400, {.maxSpeed = 76.2}, false);
-        driveInches(-4, 400, {.maxSpeed = 76.2}, false);
+        driveInches(4, 400, {.maxSpeed = 76.2}, false);    // drive forward for 400ms incase we got stuck on the bar
+        driveInches(-6, 600, {}, false);   // drive backward full speed incase we never got on the hang bar (we are probably right at the hang bar tho)
         
         //chassis.moveToPoint()//this is point for the hang needs to be tuned can u just make it drive straight back wards at 60 percent speed for like 2 feet?
     } else {
