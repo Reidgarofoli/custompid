@@ -161,6 +161,15 @@ void moveToDistance(float distance, float angleToHold, int timeout, MoveToDistan
 
     chassis.endMotion();
 }
+void driveInches(float distance, int timeout, lemlib::MoveToPointParams params = {}, bool async){
+    float targetX = chassis.getPose().x + sin(chassis.getPose().theta * M_PI/180)*distance;
+    float targetY = chassis.getPose().y + cos(chassis.getPose().theta * M_PI/180)*distance;
+    if (distance < 0){
+        chassis.moveToPoint(targetX, targetY, timeout, {false, params.maxSpeed, params.minSpeed, params.earlyExitRange}, async);
+    } else if (distance > 0){
+        chassis.moveToPoint(targetX, targetY, timeout, {true, params.maxSpeed, params.minSpeed, params.earlyExitRange}, async);
+    }
+}
 
 void auton6(){//SKILLSSSSS
     if (team == 'r'){
@@ -280,9 +289,16 @@ void auton6(){//SKILLSSSSS
          mogoValue = false;//drop it in corner 
         mogo.set_value(mogoValue);
         pros::delay(300);//we are not going for 4th corner. just the 2 rd ones and the back right blue one
-        currentPosition=outPos;//hang time MAKE THIS EXPOSE HANG idk how to make it ALL the way down. out pos is just for alliance stake but we want it fully down pls do that 
+        intake.move(0);
+        currentPosition=10000;//hang time MAKE THIS EXPOSE HANG idk how to make it ALL the way down. out pos is just for alliance stake but we want it fully down pls do that 
+        // bro even I dont know how to make it go all the way down but I do know in the code that controls the movement of the lady brown it stops it from going to far down so this should be fine
         chassis.moveToPoint(-99,-94,4000,{},false);
         chassis.turnToHeading(-496,1000,{},false);
+        
+        driveInches(-24, 2000, {.maxSpeed = 76.2}, false);
+        driveInches(4, 400, {.maxSpeed = 76.2}, false);
+        driveInches(-4, 400, {.maxSpeed = 76.2}, false);
+        
         //chassis.moveToPoint()//this is point for the hang needs to be tuned can u just make it drive straight back wards at 60 percent speed for like 2 feet?
     } else {
         chassis.setPose(0,0,0);
