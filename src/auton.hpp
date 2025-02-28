@@ -161,7 +161,7 @@ void moveToDistance(float distance, float angleToHold, int timeout, MoveToDistan
 
     chassis.endMotion();
 }
-void driveInches(float distance, int timeout, lemlib::MoveToPointParams params = {}, bool async){
+void driveInches(float distance, int timeout, lemlib::MoveToPointParams params = {}, bool async = true){
     float targetX = chassis.getPose().x + sin(chassis.getPose().theta * M_PI/180)*distance;
     float targetY = chassis.getPose().y + cos(chassis.getPose().theta * M_PI/180)*distance;
     if (distance < 0){
