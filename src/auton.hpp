@@ -293,7 +293,7 @@ void auton6(){//SKILLSSSSS
         currentPosition=10000;//hang time MAKE THIS EXPOSE HANG idk how to make it ALL the way down. out pos is just for alliance stake but we want it fully down pls do that 
         // bro even I dont know how to make it go all the way down but I do know in the code that controls the movement of the lady brown it stops it from going to far down so this should be fine
         chassis.moveToPoint(-99,-94,4000,{},false);
-        chassis.turnToHeading(-496,1000,{},false);
+        chassis.turnToHeading(-496,1000,{},false);//
         
         driveInches(-24, 2000, {.maxSpeed = 76.2}, false); // drive backward 24 inches at 60% speed
         driveInches(4, 400, {.maxSpeed = 76.2}, false);    // drive forward for 400ms incase we got stuck on the bar
