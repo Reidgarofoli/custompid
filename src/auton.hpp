@@ -248,6 +248,42 @@ void auton6(){//SKILLSSSSS
         pros::delay(200);//2nd goal in corner  
         intake.move(0);
         chassis.moveToPoint(-110,-10,2000,{},false);
+        chassis.turnToHeading(0,2000,{},false);
+        chassis.moveToPoint(-97,-107,4000,{.forwards=false},false);
+        chassis.turnToHeading(-45,1000,{},false);
+        chassis.moveToPoint(-83,-123,2000,{.forwards=false},false);
+         mogoValue = true;
+        mogo.set_value(mogoValue);
+        chassis.turnToHeading(-288,1000,{},false);
+        chassis.moveToPoint(-94,-122,4000,{.forwards=false},false);
+        pros::delay(100);
+        mogoValue = false;
+        mogo.set_value(mogoValue);//let go red right goal 
+       //edits i made thursday afternoon is everything below here - crosby 
+       
+        
+        
+
+//
+        pros::delay(300);
+        chassis.moveToPoint(-10,-122,4000,{},false);// up to here works great 
+        currentPosition=lowPos;
+        chassis.turnToHeading(-90,1000,{},false);
+        chassis.moveToPoint(-67,-112,3000,{.forwards=false},false);
+        mogoValue = true;// grab the goal with blue rign on it
+        mogo.set_value(mogoValue);
+        intake.move(127);
+        chassis.turnToHeading(-427,2000,{},false);
+        chassis.moveToPoint(-111,-95,3000,{},false);
+        pros::delay(500);
+        chassis.turnToHeading(90,1000,{},false);
+         mogoValue = false;//drop it in corner 
+        mogo.set_value(mogoValue);
+        pros::delay(300);//we are not going for 4th corner. just the 2 rd ones and the back right blue one
+        currentPosition=outPos;//hang time MAKE THIS EXPOSE HANG idk how to make it ALL the way down. out pos is just for alliance stake but we want it fully down pls do that 
+        chassis.moveToPoint(-99,-94,4000,{},false);
+        chassis.turnToHeading(-496,1000,{},false);
+        //chassis.moveToPoint()//this is point for the hang needs to be tuned can u just make it drive straight back wards at 60 percent speed for like 2 feet?
     } else {
         chassis.setPose(0,0,0);
     }
