@@ -295,7 +295,7 @@ void auton6(){//SKILLSSSSS
         chassis.moveToPoint(-99,-94,4000,{},false);
         chassis.turnToHeading(-496,1000,{},false);
         
-        driveInches(-24, 2000, {.maxSpeed = 76.2}, false);
+        driveInches(-24, 2000, {.maxSpeed = 76.2}, false); // drive backward 24 inches at 60% speed
         driveInches(4, 400, {.maxSpeed = 76.2}, false);    // drive forward for 400ms incase we got stuck on the bar
         driveInches(-6, 600, {}, false);   // drive backward full speed incase we never got on the hang bar (we are probably right at the hang bar tho)
         
