@@ -621,7 +621,7 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
         intake.move(127);
         chassis.turnToHeading(-48,1000,{},false);
         intake.move(0);
-        chassis.moveToPose(-49.5, 41.5, -55, 2000, {.maxSpeed=50}, true);
+        chassis.moveToPose(-49, 41.5, -55, 2000, {.maxSpeed=50}, true);
         // chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=40}, false);
         // chassis.swingToHeading(-56, DriveSide::RIGHT,1000,{},true);//it was -53
         pros::delay(800);
