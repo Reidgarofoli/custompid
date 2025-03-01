@@ -418,6 +418,10 @@ void opcontrol() {
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)){
             doinkVal = !doinkVal;
             doinker.set_value(doinkVal);
+            if (auton == 6){
+                ldoinkVal = !ldoinkVal;
+                ldoink.set_value(ldoinkVal);
+            }
         }
         //mogo
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){

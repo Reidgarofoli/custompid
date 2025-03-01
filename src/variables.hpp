@@ -70,6 +70,7 @@ int currentPosition = lowPos;
 bool colorSort = false;
 bool mogoValue = false;
 bool doinkVal = false;
+bool ldoinkVal = false;
 int auton = 4;
 int maxauto = 6;
 char team = 'r';

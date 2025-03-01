@@ -279,26 +279,16 @@ void auton6(){//SKILLSSSSS
         currentPosition=lowPos;
         chassis.turnToHeading(-90,1000,{},false);
         chassis.moveToPoint(-67,-112,3000,{.forwards=false},false);
-        mogoValue = true;// grab the goal with blue rign on it
-        mogo.set_value(mogoValue);
-        intake.move(127);
-        chassis.turnToHeading(-427,2000,{},false);
-        chassis.moveToPoint(-111,-95,3000,{},false);
-        pros::delay(500);
-        chassis.turnToHeading(90,1000,{},false);
-         mogoValue = false;//drop it in corner 
-        mogo.set_value(mogoValue);
+       
         pros::delay(300);//we are not going for 4th corner. just the 2 rd ones and the back right blue one
         intake.move(0);
         currentPosition=10000;//hang time MAKE THIS EXPOSE HANG idk how to make it ALL the way down. out pos is just for alliance stake but we want it fully down pls do that 
         // bro even I dont know how to make it go all the way down but I do know in the code that controls the movement of the lady brown it stops it from going to far down so this should be fine
         chassis.moveToPoint(-99,-94,4000,{},false);
         chassis.turnToHeading(-496,1000,{},false);//
-        
-        driveInches(-24, 2000, {.maxSpeed = 76.2}, false); // drive backward 24 inches at 60% speed
-        driveInches(4, 400, {.maxSpeed = 76.2}, false);    // drive forward for 400ms incase we got stuck on the bar
-        driveInches(-6, 600, {}, false);   // drive backward full speed incase we never got on the hang bar (we are probably right at the hang bar tho)
-        
+        chassis.moveToPoint(-70,-70,20000,{.forwards=false,.maxSpeed=67.2},false);
+
+       
         //chassis.moveToPoint()//this is point for the hang needs to be tuned can u just make it drive straight back wards at 60 percent speed for like 2 feet?
     } else {
         chassis.setPose(0,0,0);
@@ -312,7 +302,7 @@ void auton0(){ // solo win point not sig
         intake.move(127);
         chassis.swingToHeading(210, DriveSide::LEFT, 1000, {}, false);
         intake.move(-30);
-        currentPosition = outPos+15;
+        currentPosition = outPos;
         pros::delay(500);
         chassis.moveToPoint(-0.5, 10, 2000, {.forwards=false}, false);
         chassis.swingToHeading(247, DriveSide::RIGHT, 1000, {}, false);
@@ -330,7 +320,7 @@ void auton0(){ // solo win point not sig
         chassis.moveToPoint(-3, 20, 1000, {.forwards = false}, false);
         chassis.turnToHeading(90, 1000, {}, false);
         chassis.moveToPoint(22, 25, 1000, {}, false);
-        currentPosition = 290;
+        currentPosition = highPos - 20;
         chassis.turnToHeading(270, 1000, {}, false);
         chassis.moveToPoint(0, 31, 1000, {}, false);
         currentPosition = highPos;
@@ -458,57 +448,47 @@ void auton1(){ //goal rush OLD
     }
 }
 
-void auton2(){ //JOHN BAPST GOAL RUSH
+void auton2(){ // safer goal rush code
     if (team == 'r'){
+        int startTime = pros::millis();
         chassis.setPose(0,0,0);
+        ringsTillIntake = 1;
         doinker.set_value(true);
-        chassis.moveToPoint(6, 42.5, 2000, {}, false);
-        chassis.turnToHeading(77, 1000, {}, false);
-        doinker.set_value(false);
-        chassis.turnToHeading(81, 1000, {.minSpeed=50, .earlyExitRange=3}, false);
-        // chassis.moveToPoint(-1,46.5,4000,{.forwards=false}, false);
-        chassis.turnToHeading(81, 1000, {.minSpeed=50, .earlyExitRange=3}, false);
-        chassis.moveToPoint(-14,42,4000,{.forwards=false,.maxSpeed=40, .earlyExitRange=1},false);
-        mogoValue = true;
-        mogo.set_value(mogoValue);
-        pros::delay(100);
-        chassis.turnToHeading(-60,1000,{.minSpeed=50, .earlyExitRange=2},false);
-        intake.move(0);
-        chassis.moveToPoint(-17,48,4000,{},false);
-        chassis.turnToHeading(-50,1000,{.minSpeed=30, .earlyExitRange=1},true);
-        pros::delay(100);
-        doinker.set_value(true);
+        chassis.moveToPoint(-9, 32, 2000, {.minSpeed=80, .earlyExitRange=1}, true);
+        bool running = true;
+        while (chassis.isInMotion() && running){
+            if (chassis.getPose().y > 30){
+                doinker.set_value(false);
+                running = false;
+            }
+        }
         chassis.waitUntilDone();
-        chassis.moveToPoint(-9, 30, 2000, {.forwards=false, .minSpeed=60, .earlyExitRange=2}, false);
-        
         doinker.set_value(false);
+        chassis.moveToPoint(-6,20,2000,{.forwards=false}, false);
+        doinker.set_value(true);
         pros::delay(200);
-        intake.move(127);
-        chassis.moveToPoint(-5,40,4000,{},false);
-        chassis.turnToHeading(180,4000,{},false);
-        chassis.moveToPoint(-11,13,4000,{},false);
-        
-        chassis.turnToHeading(270,1000,{},false);
-        mogoValue = false;
-        mogo.set_value(mogoValue);
-        pros::delay(200);
-        
-        chassis.turnToHeading(270, 1000, {}, false);
-        chassis.turnToHeading(180, 1000, {}, false);
-
-        chassis.moveToPoint(-3, 40, 4000, {.forwards=false, .minSpeed=90, .earlyExitRange=2}, false);
-        chassis.moveToPoint(19, 50, 4000, {.forwards=false, .maxSpeed=50}, false);
-
+        chassis.moveToPoint(-6,15,2000,{.forwards=false, .minSpeed=60, .earlyExitRange=1}, false);
+        doinker.set_value(false);
+        currentPosition = midPos;
+        chassis.turnToHeading(135, 1000, {.minSpeed=80, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-30,28, 2000, {.forwards=false, .minSpeed=50, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-40,30, 2000, {.forwards=false, .maxSpeed=50}, false);
         mogoValue = true;
         mogo.set_value(mogoValue);
         pros::delay(200);
-        chassis.turnToHeading(180, 4000, {}, false);
-        colorSort = true;
-        chassis.moveToPoint(16, 21, 3000, {}, false);
-
-
-    } else {       
-        chassis.setPose(0, 0, 180);
+        chassis.turnToHeading(180, 1000, {.minSpeed=50, .earlyExitRange=4}, false);
+        intake.move(127);
+        chassis.moveToPose(-48, 0, 225, 3000, {.maxSpeed=80}, false);
+        intake.move(-30);
+        currentPosition = highPos; // score on alliance stake
+        chassis.moveToPoint(-42, 6, 1000, {.forwards=false}, false);
+        currentPosition = lowPos;
+        chassis.turnToHeading(100, 1000, {}, false);
+        doinkVal = true;
+        doinker.set_value(doinkVal);
+        chassis.moveToPose(0, 0, 90, 2000, {.maxSpeed=80}, false);
+    } else {
+        chassis.setPose(0,0,0);
 
     }   
 }
