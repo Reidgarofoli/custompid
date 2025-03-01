@@ -317,6 +317,12 @@ void autonomous() {
         case 6:
             auton6();
             break;
+        case 7:
+            auton7();
+            break;
+        case 8:
+            auton8();
+            break;
         default:
             break;
     } 

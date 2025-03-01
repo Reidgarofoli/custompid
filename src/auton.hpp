@@ -260,16 +260,16 @@ void auton6(){//SKILLSSSSS
         chassis.turnToHeading(0,2000,{},false);
         chassis.moveToPoint(-97,-107,4000,{.forwards=false},false);
         chassis.turnToHeading(-45,1000,{},false);
-        chassis.moveToPoint(-83,-123,2000,{.forwards=false},false);
+        chassis.moveToPoint(-85,-123,2000,{.forwards=false},false);
          mogoValue = true;//grab first blue goal - doenst actually work 
         mogo.set_value(mogoValue);
         chassis.turnToHeading(-288,1000,{},false);
-        chassis.moveToPoint(-94,-122,4000,{.forwards=false},false);
+        chassis.moveToPoint(-130,-122,4000,{.forwards=false},false);
         pros::delay(100);
         mogoValue = false;
         mogo.set_value(mogoValue);//let go 1st blue goal  
         pros::delay(300);
-        chassis.moveToPoint(-10,-122,4000,{},false);// this is where it darts over
+        chassis.moveToPoint(-10,-122,3000,{},false);// this is where it darts over
         currentPosition=lowPos;
         chassis.turnToHeading(-90,1000,{},false);
         chassis.moveToPoint(-67,-112,3000,{.forwards=false},false);///////
@@ -350,140 +350,57 @@ void auton0(){ // solo win point not sig
         currentPosition = highPos;  
     }
 }
-void auton1(){ //goal rush OLD
+void auton1(){ //alliance stake
 
-    if (team == 'r'){  //red side goal rush  
-        chassis.setPose(0,0,0);
-        doinker.set_value(true);
+    if (team == 'r'){  //red side alliance stake 
+        chassis.setPose(0, 0, 225);
         currentPosition = midPos;
+        pros::delay(100);
         intake.move(127);
-        chassis.moveToPoint(6, 42.5, 2000, {}, false);
-        chassis.turnToHeading(77, 1000, {}, false);
-        doinker.set_value(false);
-        chassis.turnToHeading(81, 1000, {.minSpeed=50, .earlyExitRange=3}, false);
-        // chassis.moveToPoint(-1,46.5,4000,{.forwards=false}, false);
-        chassis.turnToHeading(81, 1000, {.minSpeed=50, .earlyExitRange=3}, true);
-        currentPosition = 665;
+        chassis.moveToPoint(-2.5, -2.5, 1000, {}, false);
         intake.move(-30);
+        currentPosition = outPos;
         pros::delay(500);
-        chassis.waitUntilDone();
+        chassis.moveToPoint(7, 27, 2000, {.forwards=false, .maxSpeed=60, .minSpeed=40, .earlyExitRange=2}, false);
         currentPosition = lowPos;
-        chassis.moveToPoint(-14,42,4000,{.forwards=false,.maxSpeed=40, .earlyExitRange=1},false);
         mogoValue = true;
         mogo.set_value(mogoValue);
-        pros::delay(100);
-        chassis.turnToHeading(-60,1000,{.minSpeed=50, .earlyExitRange=2},false);
-        intake.move(0);
-        chassis.moveToPoint(-17,48,4000,{},false);
-        chassis.turnToHeading(-50,1000,{.minSpeed=30, .earlyExitRange=1},true);
-        pros::delay(100);
-        doinker.set_value(true);
-        chassis.waitUntilDone();
-        chassis.moveToPoint(-9, 30, 2000, {.forwards=false, .minSpeed=60, .earlyExitRange=2}, false);
-        chassis.turnToHeading(55,1000,{},false);
-        doinker.set_value(false);
+        pros::delay(200);
+        chassis.turnToHeading(90, 1000, {.minSpeed=50, .earlyExitRange=3}, false);
         intake.move(127);
-        chassis.turnToHeading(90,4000,{},false);
-        chassis.moveToPoint(0, 28, 4000, {.maxSpeed=50}, false);
-        pros::delay(100);
-
-        chassis.moveToPoint(14, 31, 2000, {},false);
-        chassis.turnToHeading(-50,2000,{},false);
-         mogoValue = false;
-        mogo.set_value(mogoValue);
-        pros::delay(200);
-        chassis.turnToHeading(-150,2000,{},false);
-        chassis.moveToPoint(20,51,4000,{.forwards=false,.maxSpeed=50,.earlyExitRange=2},false);
-         mogoValue = true;
-        mogo.set_value(mogoValue);
-    } else {//Blue Side goal rush
-        chassis.setPose(0,0,0);
-        chassis.moveToPoint(0,30,2000,{.minSpeed=60,.earlyExitRange=2}, false);
-        doinkVal = true;
-        doinker.set_value(doinkVal);
-        chassis.moveToPoint(1,42,2000,{}, false);
-        chassis.turnToHeading(90,1000,{},false);
-        doinkVal=false;
-        doinker.set_value(doinkVal);
-        pros::delay(200);
+        chassis.moveToPoint(25, 30, 2000, {}, false);
+        chassis.turnToHeading(270, 1000, {.earlyExitRange=2}, false);
+        currentPosition = highPos;
+        chassis.moveToPoint(0,31,2000,{},false);
         
-        chassis.turnToHeading(270,1000,{},false);
-        chassis.moveToPoint(21,46,2000,{.forwards = false,.maxSpeed = 50 }, false);
-        mogoValue = true;
-        mogo.set_value(mogoValue);
+    } else {//Blue Side alliance stake
+        chassis.setPose(0, 0, 225);
+        currentPosition = midPos;
+        pros::delay(100);
         intake.move(127);
-
-        doinkVal = true;
-        doinker.set_value(doinkVal);
-        chassis.swingToHeading(-165, DriveSide::LEFT, 200,{},false);
-        chassis.moveToPoint(-6,6,2000,{},false);
-        mogoValue = false;
-        mogo.set_value(mogoValue);
-        chassis.turnToHeading(90,1000,{},false);
-        intake.move(0);
-        doinkVal = false;
-        doinker.set_value(doinkVal);
-        pros::delay(200);
-        chassis.turnToHeading(270,1000,{},false);
-        intake.move(-127);
-        chassis.moveToPoint(25, 10, 2000, {.forwards=false, .minSpeed=100, .earlyExitRange=2}, false);
-        chassis.moveToPoint(33, 37, 2000, {.forwards=false, .minSpeed=100, .earlyExitRange=2}, false);
+        chassis.moveToPoint(-2.5, -2.5, 1000, {}, false);
+        intake.move(-30);
+        currentPosition = outPos;
+        pros::delay(500);
+        chassis.moveToPoint(7, 27, 2000, {.forwards=false, .maxSpeed=60, .minSpeed=40, .earlyExitRange=2}, false);
+        currentPosition = lowPos;
         mogoValue = true;
         mogo.set_value(mogoValue);
-        chassis.turnToHeading(215,1000,{},false);
-        colorSort=true;
-        chassis.moveToPoint(11, 30, 2000, {.earlyExitRange=2}, false);
-       
-
-        //chassis.turnToHeading(80,1000,{},false);
-        // chassis.moveToPoint(3, 41, 2000, {.forwards=false, .earlyExitRange=2}, false);
-        // intake.move(127);
-        // chassis.moveToPoint(9, 30, 2000, {.earlyExitRange=2}, false);
-
+        pros::delay(200);
+        chassis.turnToHeading(90, 1000, {.minSpeed=50, .earlyExitRange=3}, false);
+        intake.move(127);
+        chassis.moveToPoint(25, 30, 2000, {}, false);
+        chassis.turnToHeading(270, 1000, {.earlyExitRange=2}, false);
+        currentPosition = highPos;
+        chassis.moveToPoint(0,31,2000,{},false);
     }
 }
 
-void auton2(){ // safer goal rush code
+void auton2(){ // 4 stack both sides no alliance
     if (team == 'r'){
-        int startTime = pros::millis();
-        chassis.setPose(0,0,0);
-        ringsTillIntake = 1;
-        doinker.set_value(true);
-        chassis.moveToPoint(-9, 32, 2000, {.minSpeed=80, .earlyExitRange=1}, true);
-        bool running = true;
-        while (chassis.isInMotion() && running){
-            if (chassis.getPose().y > 30){
-                doinker.set_value(false);
-                running = false;
-            }
-        }
-        chassis.waitUntilDone();
-        doinker.set_value(false);
-        chassis.moveToPoint(-6,20,2000,{.forwards=false}, false);
-        doinker.set_value(true);
-        pros::delay(200);
-        chassis.moveToPoint(-6,15,2000,{.forwards=false, .minSpeed=60, .earlyExitRange=1}, false);
-        doinker.set_value(false);
-        currentPosition = midPos;
-        chassis.turnToHeading(135, 1000, {.minSpeed=80, .earlyExitRange=1}, false);
-        chassis.moveToPoint(-30,28, 2000, {.forwards=false, .minSpeed=50, .earlyExitRange=1}, false);
-        chassis.moveToPoint(-40,30, 2000, {.forwards=false, .maxSpeed=50}, false);
-        mogoValue = true;
-        mogo.set_value(mogoValue);
-        pros::delay(200);
-        chassis.turnToHeading(180, 1000, {.minSpeed=50, .earlyExitRange=4}, false);
-        intake.move(127);
-        chassis.moveToPose(-48, 0, 225, 3000, {.maxSpeed=80}, false);
-        intake.move(-30);
-        currentPosition = highPos; // score on alliance stake
-        chassis.moveToPoint(-42, 6, 1000, {.forwards=false}, false);
-        currentPosition = lowPos;
-        chassis.turnToHeading(100, 1000, {}, false);
-        doinkVal = true;
-        doinker.set_value(doinkVal);
-        chassis.moveToPose(0, 0, 90, 2000, {.maxSpeed=80}, false);
+        chassis.setPose(0,0,180);
     } else {
-        chassis.setPose(0,0,0);
+        chassis.setPose(0,0,180);
 
     }   
 }
@@ -596,25 +513,25 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
         intake.move(127);
         chassis.turnToHeading(-48,1000,{},false);
         intake.move(0);
-        chassis.moveToPose(-49, 41.5, -55, 2000, {.maxSpeed=50}, true);
+        chassis.moveToPose(-48, 41.5, -55, 2000, {.maxSpeed=50}, true);
         // chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=40}, false);
         // chassis.swingToHeading(-56, DriveSide::RIGHT,1000,{},true);//it was -53
         pros::delay(800);
         doinker.set_value(true);
         chassis.waitUntilDone();
-        chassis.moveToPoint(-38, 9, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-38, 15, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=1}, false);
         chassis.turnToHeading(105, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=80, .earlyExitRange=4}, false);
         doinker.set_value(false);
         pros::delay(400);
         colorSort = true;
-        chassis.moveToPose(-10, 0, 100, 2000, {}, true);
-        pros::delay(200);
+        chassis.moveToPose(-10.5, -2, 100, 2000, {}, true);
+        pros::delay(400);
         doinker.set_value(true);
         chassis.waitUntilDone();
         chassis.turnToHeading(60, 1000, {.minSpeed=127, .earlyExitRange=10});
         doinker.set_value(false);
         colorSort = true;
-        chassis.moveToPose(0, 25, 0, 4000, {.maxSpeed=60}, true);
+        chassis.moveToPose(0, 20, 0, 4000, {.maxSpeed=60}, true);
         while ((pros::millis() - startTime)/1000 < 14.9) {
 
         }
@@ -644,43 +561,71 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
     }
 }
 
-void auton5(){ // PID TUNING
+void auton5(){ // safer goal rush
     if (team == 'r'){
+        int startTime = pros::millis();
         chassis.setPose(0,0,0);
         ringsTillIntake = 1;
         doinker.set_value(true);
-        chassis.moveToPoint(-11, 34, 2000, {.minSpeed=80,.earlyExitRange=1}, false);
-        intake.move(0);
-        chassis.moveToPoint(-6,21,2000,{.forwards=false},false);
-
+        chassis.moveToPoint(-9, 32, 2000, {.minSpeed=80, .earlyExitRange=1}, true);
+        bool running = true;
+        while (chassis.isInMotion() && running){
+            if (chassis.getPose().y > 30){
+                doinker.set_value(false);
+                running = false;
+            }
+        }
+        chassis.waitUntilDone();
         doinker.set_value(false);
-        pros::delay(300);
-        chassis.swingToHeading(90,DriveSide::RIGHT,2000, {.minSpeed=80, .earlyExitRange=3}, false);
-        chassis.moveToPoint(-38,31, 2000, {.forwards=false,.maxSpeed=50,}, false);
+        chassis.moveToPoint(-6,20,2000,{.forwards=false}, false);
+        doinker.set_value(true);
+        pros::delay(200);
+        chassis.moveToPoint(-6,15,2000,{.forwards=false, .minSpeed=60, .earlyExitRange=1}, false);
+        doinker.set_value(false);
+        currentPosition = midPos;
+        chassis.turnToHeading(135, 1000, {.minSpeed=80, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-30,28, 2000, {.forwards=false, .minSpeed=50, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-40,30, 2000, {.forwards=false, .maxSpeed=50}, false);
         mogoValue = true;
         mogo.set_value(mogoValue);
         pros::delay(200);
+        chassis.turnToHeading(180, 1000, {.minSpeed=50, .earlyExitRange=4}, false);
         intake.move(127);
-        chassis.turnToHeading(-60,1000,{},false);
-        intake.move(0);
-        chassis.moveToPoint(-47.5,42.5, 2000, {.maxSpeed=60}, false);
-        chassis.turnToHeading(-48,1000,{},false);
-        doinker.set_value(true);
-        pros::delay(200);
-        chassis.swingToHeading(-15, DriveSide::RIGHT, 1000, {}, false);
-        ldoink.set_value(true);
-        pros::delay(200);
-        chassis.moveToPoint(-30, 8, 3000, {.forwards=false}, false);
-        doinker.set_value(false);
-        ldoink.set_value(false);
+        chassis.moveToPose(-48, 0, 225, 3000, {.maxSpeed=80}, false);
+        intake.move(-30);
+        currentPosition = outPos; // score on alliance stake
         pros::delay(400);
-        colorSort=true;
-        chassis.turnToHeading(30, 1000, {}, false);
-        chassis.swingToHeading(135, DriveSide::LEFT, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=127, .earlyExitRange=3}, false);
-        chassis.moveToPoint(0, -3, 1000, {.minSpeed=80}, false);
+        chassis.moveToPoint(-42, 6, 1000, {.forwards=false}, false);
+        chassis.turnToHeading(100, 1000, {}, false);
+        doinkVal = true;
+        doinker.set_value(doinkVal);
+        chassis.moveToPose(0, -5, 90, 2000, {.maxSpeed=80}, false);
+        chassis.turnToHeading(50,2000,{},false);
+        doinkVal = false;
+        doinker.set_value(doinkVal);
     } else {
 
     }
+}
+void auton7(){ // 4 stack left side
+    if (team == 'r'){
+        chassis.setPose(0,0,180);
+    } else {
+        chassis.setPose(0,0,180);
+    }   
+}
+void auton8(){ // 4 stack right
+    if (team == 'r'){
+        chassis.setPose(0,0,180);
+        chassis.moveToPoint(0, 20, 1000, {.minSpeed=70, .earlyExitRange=2}, false);
+        chassis.moveToPoint(-5, 35, 1000, {.maxSpeed=50}, false);
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        chassis.turnToHeading(90, 1000, {}, false);
+    } else {
+        chassis.setPose(0,0,180);
+    }   
 }
 
 //PID tuning
