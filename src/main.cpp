@@ -392,6 +392,10 @@ void opcontrol() {
                 case highPos:
                     currentPosition = lowPos;
                     break;
+                case midPos*2:
+                    intake_moving = true;
+                    currentPosition = highPos;
+                    break;
                 default:
                     currentPosition = lowPos;
                     break;
