@@ -254,31 +254,26 @@ void auton6(){//SKILLSSSSS
         chassis.moveToPoint(-127,-4,3000,{.forwards=false}, false);
         mogoValue = false;
         mogo.set_value(mogoValue);
-        pros::delay(200);//2nd goal in corner  
+        pros::delay(200);//2nd goal in corner   //edits i made thursday afternoon is everything below here - crosby
         intake.move(0);
         chassis.moveToPoint(-110,-10,2000,{},false);
         chassis.turnToHeading(0,2000,{},false);
         chassis.moveToPoint(-97,-107,4000,{.forwards=false},false);
         chassis.turnToHeading(-45,1000,{},false);
         chassis.moveToPoint(-83,-123,2000,{.forwards=false},false);
-         mogoValue = true;
+         mogoValue = true;//grab first blue goal - doenst actually work 
         mogo.set_value(mogoValue);
         chassis.turnToHeading(-288,1000,{},false);
         chassis.moveToPoint(-94,-122,4000,{.forwards=false},false);
         pros::delay(100);
         mogoValue = false;
-        mogo.set_value(mogoValue);//let go red right goal 
-       //edits i made thursday afternoon is everything below here - crosby 
-       
-        
-        
-
-//
+        mogo.set_value(mogoValue);//let go 1st blue goal  
         pros::delay(300);
-        chassis.moveToPoint(-10,-122,4000,{},false);// up to here works great 
+        chassis.moveToPoint(-10,-122,4000,{},false);// this is where it darts over
         currentPosition=lowPos;
         chassis.turnToHeading(-90,1000,{},false);
-        chassis.moveToPoint(-67,-112,3000,{.forwards=false},false);
+        chassis.moveToPoint(-67,-112,3000,{.forwards=false},false);///////
+        
        
         pros::delay(300);//we are not going for 4th corner. just the 2 rd ones and the back right blue one
         intake.move(0);
