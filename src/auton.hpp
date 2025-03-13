@@ -350,7 +350,7 @@ void auton0(){ // solo win point not sig
         currentPosition = highPos;  
     }
 }
-void auton1(){ //alliance stake
+void auton1(){ //alliance stake right side
 
     if (team == 'r'){  //red side alliance stake 
         chassis.setPose(0, 0, 225);
@@ -427,6 +427,7 @@ void auton3(){ // sig solo win point
         mogoValue = false;
         mogo.set_value(mogoValue);
         intake.move(0);
+        colorSort = true;
         ringsTillIntake = 2;
         intakeRingToIntake = true;
         chassis.moveToPoint(-12, 6, 3000, {.maxSpeed=60}, false);
@@ -504,22 +505,27 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
         pros::delay(200);
         chassis.moveToPoint(-6,15,2000,{.forwards=false, .minSpeed=60, .earlyExitRange=1}, false);
         doinker.set_value(false);
-        chassis.turnToHeading(135, 1000, {.minSpeed=80, .earlyExitRange=1}, false);
-        chassis.moveToPoint(-30,28, 2000, {.forwards=false, .minSpeed=50, .earlyExitRange=1}, false);
-        chassis.moveToPoint(-40,30, 2000, {.forwards=false, .maxSpeed=50}, false);
+        //end of rush
+        //score middle
+        chassis.turnToHeading(180, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=80, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-6,45, 2000, {.forwards=false,.maxSpeed=50, .earlyExitRange=1}, false);
         mogoValue = true;
         mogo.set_value(mogoValue);
         pros::delay(200);
         intake.move(127);
-        chassis.turnToHeading(-48,1000,{},false);
+        pros::delay(500);
         intake.move(0);
-        chassis.moveToPose(-48, 41.5, -55, 2000, {.maxSpeed=50}, true);
-        // chassis.moveToPoint(-50,41.5, 2000, {.maxSpeed=40}, false);
-        // chassis.swingToHeading(-56, DriveSide::RIGHT,1000,{},true);//it was -53
-        pros::delay(800);
-        doinker.set_value(true);
-        chassis.waitUntilDone();
-        chassis.moveToPoint(-38, 15, 2000, {.forwards = false, .minSpeed=80, .earlyExitRange=1}, false);
+        mogoValue= false;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        chassis.turnToHeading(80,2000,{},false);
+       //pros::delay(15000);
+        chassis.moveToPoint(-30,28, 2000, {.forwards=false, .minSpeed=50, .earlyExitRange=1}, false);
+        chassis.moveToPoint(-40,33, 2000, {.forwards=false, .maxSpeed=50}, false);
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        colorSort=true;
         chassis.turnToHeading(105, 1000, {.direction=AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed=80, .earlyExitRange=4}, false);
         doinker.set_value(false);
         pros::delay(400);
@@ -531,12 +537,14 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
         chassis.turnToHeading(60, 1000, {.minSpeed=127, .earlyExitRange=10});
         doinker.set_value(false);
         colorSort = true;
-        chassis.moveToPose(0, 20, 0, 4000, {.maxSpeed=60}, true);
+        chassis.angularSettings.kP+=3;
+        chassis.moveToPose(3, 40, 0, 4000, {.maxSpeed=80}, true);
         while ((pros::millis() - startTime)/1000 < 14.9) {
-
+            
         }
         mogoValue = false;
         mogo.set_value(mogoValue);
+        chassis.angularSettings.kP-=3;
     } else {
         int startTime = pros::millis();
         chassis.setPose(0,0,0);
@@ -558,6 +566,19 @@ void auton4(){// GOAL RUSH STATES ELIMINATION
         chassis.moveToPoint(-6,15,2000,{.forwards=false, .minSpeed=60, .earlyExitRange=1}, false);
         doinker.set_value(false);
         chassis.turnToHeading(225, 1500, {}, false);
+
+        chassis.moveToPoint(8,30, 2000, {.forwards=false, .maxSpeed=50}, false);
+        mogoValue = true;
+        mogo.set_value(mogoValue);
+        pros::delay(200);
+        chassis.turnToHeading(180,2000,{},false);
+        chassis.moveToPose(21,0,-225, 2000, { .maxSpeed=80}, true);
+        currentPosition = midPos;
+        pros::delay(200);
+        intake.move(127);
+        chassis.waitUntilDone();
+        intake.move(-30);
+        currentPosition = outPos;
     }
 }
 
