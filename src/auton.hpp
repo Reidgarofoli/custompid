@@ -274,7 +274,7 @@ void auton6(){//SKILLSSSSS
         chassis.turnToHeading(-90,1000,{},false);
         chassis.moveToPoint(-67,-112,3000,{.forwards=false},false);///////
         
-       
+       //hi
         pros::delay(300);//we are not going for 4th corner. just the 2 rd ones and the back right blue one
         intake.move(0);
         currentPosition=10000;//hang time MAKE THIS EXPOSE HANG idk how to make it ALL the way down. out pos is just for alliance stake but we want it fully down pls do that 
